@@ -1,6 +1,6 @@
 import { SpawnError } from "@/utils/interfaces";
 import { spawnSync } from "child_process";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;

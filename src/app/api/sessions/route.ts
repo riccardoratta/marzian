@@ -1,6 +1,6 @@
 import { SpawnError } from "@/utils/interfaces";
-import { getPIDbyName } from "@/utils/shell";
-import { execSync, spawnSync } from "child_process";
+import { getPIDbyName, stayOpenScript } from "@/utils/shell";
+import { spawnSync } from "child_process";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -75,7 +75,7 @@ export async function POST(
   const uniqueCommand = `${command} && echo 'marzian:${name}'`;
 
   const spawnRes = spawnSync(
-    `tmux new-session -d -s ${name} "${uniqueCommand}"`,
+    `tmux new-session -d -s ${name} "${uniqueCommand}; ${stayOpenScript}"`,
     {
       shell: true,
     }

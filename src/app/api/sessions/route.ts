@@ -1,5 +1,6 @@
 import { SpawnError } from "@/utils/interfaces";
-import { spawnSync } from "child_process";
+import { getPIDbyName } from "@/utils/shell";
+import { execSync, spawnSync } from "child_process";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -12,6 +13,7 @@ export interface SessionsResponse {
 interface Session {
   name: string;
   createdAt: number;
+  pid?: number;
 }
 
 export const dynamic = "force-dynamic";
@@ -42,6 +44,10 @@ export async function GET(): Promise<NextResponse<SessionsResponse>> {
     }
   }
 
+  for (const session of sessions) {
+    session.pid = getPIDbyName(session.name);
+  }
+
   return NextResponse.json({ sessions });
 }
 
@@ -65,9 +71,15 @@ export async function POST(
     `Creating new tmux session with name ${name} and command "${command}"`
   );
 
-  const spawnRes = spawnSync(`tmux new-session -d -s ${name} "${command}"`, {
-    shell: true,
-  });
+  // Add an unique suffix into the command to ensure uniquess with `pgrep`
+  const uniqueCommand = `${command} && echo 'marzian:${name}'`;
+
+  const spawnRes = spawnSync(
+    `tmux new-session -d -s ${name} "${uniqueCommand}"`,
+    {
+      shell: true,
+    }
+  );
 
   if (spawnRes.status === 0) {
     return NextResponse.json({

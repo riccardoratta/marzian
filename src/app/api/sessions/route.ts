@@ -1,5 +1,6 @@
 import { spawnSync } from "child_process";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
 
@@ -15,16 +16,16 @@ interface Session {
 export const dynamic = "force-dynamic";
 
 export async function GET(): Promise<NextResponse<SessionsResponse>> {
-  const ls = spawnSync("tmux ls", { shell: true });
+  const spawnRes = spawnSync("tmux ls", { shell: true });
 
   if (
-    ls.status === 1 &&
-    ls.stderr.toString().trim().startsWith("no server running on")
+    spawnRes.status === 1 &&
+    spawnRes.stderr.toString().trim().startsWith("no server running on")
   ) {
     return NextResponse.json({ sessions: [] });
   }
 
-  const lsOutput = ls.stdout.toString();
+  const lsOutput = spawnRes.stdout.toString();
 
   const sessions: Session[] = [];
 
@@ -41,4 +42,35 @@ export async function GET(): Promise<NextResponse<SessionsResponse>> {
   }
 
   return NextResponse.json({ sessions });
+}
+
+const SessionCreateRequest = z.object({
+  name: z.string(),
+  command: z.string(),
+});
+
+export async function POST(request: NextRequest) {
+  const { name, command } = SessionCreateRequest.parse(await request.json());
+
+  console.log(
+    `Creating new tmux session with name ${name} and command "${command}"`
+  );
+
+  const spawnRes = spawnSync(`tmux new-session -d -s ${name} "${command}"`, {
+    shell: true,
+  });
+
+  if (spawnRes.status === 0) {
+    return NextResponse.json({
+      name,
+    });
+  }
+
+  return NextResponse.json(
+    {
+      exitCode: spawnRes.status,
+      stderr: spawnRes.stderr.toString(),
+    },
+    { status: 500 }
+  );
 }

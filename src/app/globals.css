@@ -1,0 +1,12 @@
+::selection {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--app-contrast-color);
+  -webkit-text-fill-color: var(--app-contrast-color); /* Fix gradient text */
+}
+
+body {
+  background-color: light-dark(
+    var(--mantine-color-gray-1),
+    var(--mantine-color-dark-8)
+  );
+}

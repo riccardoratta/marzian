@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "DavidAnson.vscode-markdownlint",
+    "esbenp.prettier-vscode",
+    "formulahendry.auto-rename-tag",
+    "IronGeek.vscode-env",
+    "rangav.vscode-thunder-client",
+    "vscode-icons-team.vscode-icons",
+    "MylesMurphy.prettify-ts",
+    "NextNav.NextNav",
+    "vunguyentuan.vscode-postcss",
+    "vunguyentuan.vscode-css-variables",
+    "meganrogge.template-string-converter"
+  ]
+}

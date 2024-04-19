@@ -1,0 +1,29 @@
+.outer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+  padding: calc(var(--mantine-spacing-xl) * 2);
+}
+
+.code {
+  font-size: rem(128px);
+  line-height: 1;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    font-size: rem(56px);
+  }
+}
+
+.message {
+  text-align: center;
+}

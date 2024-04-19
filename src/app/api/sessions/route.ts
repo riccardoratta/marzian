@@ -46,7 +46,9 @@ export async function GET(): Promise<NextResponse<SessionsResponse>> {
 }
 
 const SessionCreateRequest = z.object({
-  name: z.string(),
+  name: z.string().regex(/^[a-zA-Z0-9\-\_]+$/, {
+    message: "Only letters, numbers, and dashes are allowed.",
+  }),
   command: z.string(),
 });
 

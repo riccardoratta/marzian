@@ -11,6 +11,8 @@ import {
 
 import { colorSchemeManager } from "@/store/color-scheme";
 import { useThemeStore } from "@/store/theme";
+import { Consumer, ConsumerProvider } from "tqa";
+import { api } from "@/utils/http";
 
 export interface ProvidersProps {
   children: ReactNode;
@@ -20,6 +22,8 @@ export interface ProvidersProps {
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
 });
+
+const consumer = new Consumer(api);
 
 const { getTheme, setTheme } = useThemeStore.getState();
 
@@ -40,16 +44,18 @@ export default function Providers({ children, cookies }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {loading ? null : (
-        <MantineProvider
-          defaultColorScheme={colorScheme}
-          colorSchemeManager={colorSchemeManager}
-          theme={theme.data}
-          cssVariablesResolver={theme.resolver}
-        >
-          <Container>{children}</Container>
-        </MantineProvider>
-      )}
+      <ConsumerProvider consumer={consumer}>
+        {loading ? null : (
+          <MantineProvider
+            defaultColorScheme={colorScheme}
+            colorSchemeManager={colorSchemeManager}
+            theme={theme.data}
+            cssVariablesResolver={theme.resolver}
+          >
+            <Container>{children}</Container>
+          </MantineProvider>
+        )}
+      </ConsumerProvider>
     </QueryClientProvider>
   );
 }

@@ -1,3 +1,4 @@
+import { SpawnError } from "@/utils/interfaces";
 import { spawnSync } from "child_process";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -49,7 +50,13 @@ const SessionCreateRequest = z.object({
   command: z.string(),
 });
 
-export async function POST(request: NextRequest) {
+export interface SessionCreateResponse {
+  name: string;
+}
+
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<SessionCreateResponse | SpawnError>> {
   const { name, command } = SessionCreateRequest.parse(await request.json());
 
   console.log(
@@ -68,7 +75,7 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     {
-      exitCode: spawnRes.status,
+      exitCode: spawnRes.status ?? -1,
       stderr: spawnRes.stderr.toString(),
     },
     { status: 500 }

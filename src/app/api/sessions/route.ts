@@ -10,7 +10,7 @@ export interface SessionsResponse {
   sessions: Session[];
 }
 
-interface Session {
+export interface Session {
   name: string;
   createdAt: number;
   pid?: number;

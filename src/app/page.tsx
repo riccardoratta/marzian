@@ -35,13 +35,13 @@ export default function HomePage() {
         <Title order={2} mb="sm">
           Sessions
         </Title>
-        <Card p={0}>
+        <Card p={0} withBorder>
           {data !== undefined && data.response.sessions.length !== 0 ? (
             data.response.sessions.map((session) => (
               <Session key={session.name} session={session}></Session>
             ))
           ) : (
-            <Text m="lg" c="dimmed">
+            <Text px="lg" py="md" c="dimmed">
               Nothing is started yet?
             </Text>
           )}

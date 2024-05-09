@@ -5,6 +5,7 @@ import { Card } from "@mantine/core";
 
 export interface TerminalMethods {
   writeln: (value: string) => void;
+  clear: () => void;
 }
 
 const TerminalComponent = forwardRef<TerminalMethods>(
@@ -58,6 +59,11 @@ const TerminalComponent = forwardRef<TerminalMethods>(
               } else {
                 initMessages.push(value);
               }
+            }
+          },
+          clear() {
+            if (terminalRef.current) {
+              terminalRef.current.clear();
             }
           },
         };

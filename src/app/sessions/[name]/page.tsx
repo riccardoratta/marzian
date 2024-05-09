@@ -6,7 +6,6 @@ import { useRetrieve } from "tqa/hooks/crud";
 import { AppShell, Title } from "@mantine/core";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function SessionPage({ params }: { params: { name: string } }) {
   const terminalRef = useRef<TerminalMethods>(null);

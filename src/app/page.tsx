@@ -41,7 +41,9 @@ export default function HomePage() {
               <Session key={session.name} session={session}></Session>
             ))
           ) : (
-            <Text c="dimmed">Nothing is started yet?</Text>
+            <Text m="lg" c="dimmed">
+              Nothing is started yet?
+            </Text>
           )}
         </Card>
       </AppShell.Main>

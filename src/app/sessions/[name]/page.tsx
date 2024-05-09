@@ -22,7 +22,6 @@ export default function SessionPage({ params }: { params: { name: string } }) {
     console.log(data);
     if (data && terminalRef.current) {
       for (const line of data.response.lines) {
-        console.log("writing line", line);
         terminalRef.current.writeln(line);
       }
     }

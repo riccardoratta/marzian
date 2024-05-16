@@ -67,11 +67,13 @@ function Session({ session }: { session: Session }) {
       <Flex>
         <Group flex="1">
           <Text>{session.name}</Text>
-          <Text c="dimmed">
-            {formatDistance(new Date(session.createdAt), new Date(), {
-              addSuffix: true,
-            })}
-          </Text>
+          {session.createdAt && (
+            <Text c="dimmed">
+              {formatDistance(new Date(session.createdAt), new Date(), {
+                addSuffix: true,
+              })}
+            </Text>
+          )}
         </Group>
         <Text mr="sm">{isActive ? `PID ${session.pid}` : "Terminated"}</Text>
         <IconCircle

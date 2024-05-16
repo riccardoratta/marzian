@@ -1,8 +1,6 @@
 "use client";
 
 import { TerminalComponent, TerminalMethods } from "@/components/terminal";
-import type { SessionResponse } from "@/app/api/sessions/[name]/route";
-import { useRetrieve } from "tqa/hooks/crud";
 import { AppShell, Title } from "@mantine/core";
 import { useRef } from "react";
 import { useEffect } from "react";
@@ -10,25 +8,20 @@ import { useEffect } from "react";
 export default function SessionPage({ params }: { params: { name: string } }) {
   const terminalRef = useRef<TerminalMethods>(null);
 
-  const { isLoading, data } = useRetrieve<"retrieve", SessionResponse>(
-    `/api/sessions/${params.name}`,
-    {
-      reactQuery: { queryKey: ["sessions", params.name] },
-      axios: { method: "get" },
-    }
-  );
-
   useEffect(() => {
-    if (data && terminalRef.current) {
-      for (const line of data.response.lines) {
-        terminalRef.current.writeln(line);
-      }
-    }
-  }, [data]);
-
-  if (isLoading) {
-    return <span>Loading..</span>;
-  }
+    const eventSource = new EventSource(`/api/sessions/${params.name}`);
+    eventSource.onmessage = (e) => {
+      terminalRef.current?.write(
+        Buffer.from(e.data as string, "base64").toString("utf8")
+      );
+    };
+    eventSource.onerror = (err) => {
+      console.error("EventSource failed:", err);
+    };
+    return () => {
+      eventSource.close();
+    };
+  }, [params.name]);
 
   return (
     <AppShell>

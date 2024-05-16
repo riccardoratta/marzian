@@ -12,13 +12,13 @@ export interface SessionsResponse {
 
 export interface Session {
   name: string;
-  createdAt: number;
+  createdAt: number | null;
   pid?: number;
 }
 
 export const dynamic = "force-dynamic";
 
-export async function GET(): Promise<NextResponse<SessionsResponse>> {
+export function GET(): NextResponse<SessionsResponse> {
   const spawnRes = spawnSync("tmux ls", { shell: true });
 
   if (

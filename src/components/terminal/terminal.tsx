@@ -1,10 +1,17 @@
-import type { Terminal } from "@xterm/xterm";
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import "@xterm/xterm/css/xterm.css";
 import { Card } from "@mantine/core";
+import { Terminal } from "@xterm/xterm";
 
 export interface TerminalMethods {
   writeln: (value: string) => void;
+  write: (value: string) => void;
   clear: () => void;
 }
 
@@ -13,39 +20,34 @@ const TerminalComponent = forwardRef<TerminalMethods>(
     const terminalContainerRef = useRef<HTMLDivElement>(null);
     const terminalRef = useRef<Terminal>();
 
-    let initMessages: string[] = [];
+    const [initBuffer, setInitBuffer] = useState<string>("");
 
     useEffect(() => {
-      const initTerminal = async () => {
-        const { Terminal } = await import("@xterm/xterm");
-        const { FitAddon } = await import("@xterm/addon-fit");
-
-        terminalRef.current = new Terminal();
-
-        const fitAddon = new FitAddon();
-
-        terminalRef.current.loadAddon(fitAddon);
+      const initTerminal = () => {
+        terminalRef.current = new Terminal({
+          cols: 80,
+          rows: 30,
+        });
 
         if (terminalContainerRef.current) {
           terminalRef.current.open(terminalContainerRef.current);
-          terminalRef.current.onRender(() => {
-            fitAddon.fit();
-          });
         }
 
-        for (const message of initMessages) {
-          terminalRef.current.writeln(message);
+        if (initBuffer.length !== 0) {
+          terminalRef.current.write(initBuffer);
         }
-        initMessages = [];
+
+        terminalRef.current.resize(80, 30);
       };
 
-      initTerminal();
+      void initTerminal();
 
       return () => {
         if (terminalRef.current) {
           terminalRef.current.dispose();
         }
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useImperativeHandle(
@@ -56,8 +58,15 @@ const TerminalComponent = forwardRef<TerminalMethods>(
             if (value.length !== 0) {
               if (terminalRef.current) {
                 terminalRef.current.writeln(value);
+              }
+            }
+          },
+          write(value: string) {
+            if (value.length !== 0) {
+              if (terminalRef.current) {
+                terminalRef.current.write(value);
               } else {
-                initMessages.push(value);
+                setInitBuffer(initBuffer + value);
               }
             }
           },
@@ -68,15 +77,12 @@ const TerminalComponent = forwardRef<TerminalMethods>(
           },
         };
       },
-      []
+      [initBuffer]
     );
 
     return (
       <Card style={{ backgroundColor: "black" }} p="md">
-        <div
-          ref={terminalContainerRef}
-          style={{ width: "100%", height: "300px" }}
-        />
+        <div ref={terminalContainerRef} style={{ width: "100%" }} />
       </Card>
     );
   }

@@ -1,18 +1,6 @@
-import {
-  AppShell,
-  AppShellMain,
-  Card,
-  Text,
-  Flex,
-  Title,
-  Group,
-  useMantineTheme,
-  UnstyledButton,
-} from "@mantine/core";
-import { formatDistance } from "date-fns";
-import { IconCircle } from "@tabler/icons-react";
-import classes from "./page.module.css";
-import { type Session, getSessions } from "@/utils/data";
+import { AppShell, AppShellMain, Card, Text, Title } from "@mantine/core";
+import { getSessions } from "@/utils/data";
+import SessionTile from "@/components/session-tile/session-tile";
 
 export default function HomePage() {
   const sessions = getSessions();
@@ -26,7 +14,7 @@ export default function HomePage() {
         <Card p={0} withBorder>
           {sessions.length !== 0 ? (
             sessions.map((session) => (
-              <Session key={session.name} session={session}></Session>
+              <SessionTile key={session.name} session={session}></SessionTile>
             ))
           ) : (
             <Text px="lg" py="md" c="dimmed">
@@ -36,38 +24,5 @@ export default function HomePage() {
         </Card>
       </AppShellMain>
     </AppShell>
-  );
-}
-
-function Session({ session }: { session: Session }) {
-  const isActive = session.pid !== undefined;
-
-  const theme = useMantineTheme();
-
-  return (
-    <UnstyledButton
-      px="lg"
-      py="md"
-      className={classes.clickable}
-      component="a"
-      href={`sessions/${session.name}`}
-    >
-      <Flex>
-        <Group flex="1">
-          <Text>{session.name}</Text>
-          {session.createdAt && (
-            <Text c="dimmed">
-              {formatDistance(new Date(session.createdAt), new Date(), {
-                addSuffix: true,
-              })}
-            </Text>
-          )}
-        </Group>
-        <Text mr="sm">{isActive ? `PID ${session.pid}` : "Terminated"}</Text>
-        <IconCircle
-          color={isActive ? theme.colors.green[6] : theme.colors.gray[4]}
-        />
-      </Flex>
-    </UnstyledButton>
   );
 }

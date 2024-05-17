@@ -8,7 +8,6 @@ import {
   Modal,
   HoverCard,
   MultiSelect,
-  Input,
   Popover,
   Select,
   Tooltip,
@@ -112,12 +111,6 @@ const BASE_THEME: ThemeState["theme"]["data"] = mergeMantineTheme(
       Card: Card.extend({ defaultProps: { shadow: dominantShadow } }),
       Checkbox: Checkbox.extend({ styles: { input: { cursor: "pointer" } } }),
       HoverCard: HoverCard.extend({ defaultProps: { shadow: dominantShadow } }),
-
-      Input: Input.extend({
-        styles: ({ shadows }) => {
-          return { input: { boxShadow: shadows[dominantShadow] } };
-        },
-      }),
 
       Menu: Menu.extend({
         defaultProps: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { type Session } from "@/utils/data";
+import { type Session } from "@/lib/data";
 import {
   Flex,
   Group,
@@ -20,8 +20,7 @@ export default function SessionTile({ session }: { session: Session }) {
 
   return (
     <UnstyledButton
-      px="lg"
-      py="md"
+      p="md"
       className={classes.clickable}
       component="a"
       href={`sessions/${session.name}`}

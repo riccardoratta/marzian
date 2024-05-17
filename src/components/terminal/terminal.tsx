@@ -25,7 +25,7 @@ const TerminalComponent = forwardRef<TerminalMethods>(
     useEffect(() => {
       const initTerminal = () => {
         terminalRef.current = new Terminal({
-          cols: 80,
+          cols: 95,
           rows: 30,
         });
 
@@ -37,7 +37,7 @@ const TerminalComponent = forwardRef<TerminalMethods>(
           terminalRef.current.write(initBuffer);
         }
 
-        terminalRef.current.resize(80, 30);
+        terminalRef.current.resize(95, 30);
       };
 
       void initTerminal();
@@ -81,8 +81,16 @@ const TerminalComponent = forwardRef<TerminalMethods>(
     );
 
     return (
-      <Card style={{ backgroundColor: "black" }} p="md">
-        <div ref={terminalContainerRef} style={{ width: "100%" }} />
+      <Card
+        style={{
+          backgroundColor: "black",
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+        }}
+        px="md"
+        py="xs"
+      >
+        <div ref={terminalContainerRef} style={{ width: "100%" }}></div>
       </Card>
     );
   }

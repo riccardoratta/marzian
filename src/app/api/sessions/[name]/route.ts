@@ -1,20 +1,28 @@
-import { SpawnError } from "@/utils/interfaces";
-import { spawnSync } from "child_process";
+import { deleteSession, getSession, TmuxError } from "@/lib/data";
+import { Details, SpawnError } from "@/utils/interfaces";
+import { InternalServerError, notFound } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";
 import { spawn } from "node-pty";
 
 export const dynamic = "force-dynamic";
 
-export interface SessionResponse {
-  lines: string[];
-}
-
 const encoder = new TextEncoder();
 
-export function GET() {
-  const p = spawn("tmux", ["attach"], {
+export function GET(
+  _: NextRequest,
+  { params }: { params: { name: string } }
+): NextResponse<Details> {
+  const { name } = params;
+
+  const session = getSession(name);
+
+  if (!session) {
+    return notFound();
+  }
+
+  const p = spawn("tmux", ["attach", "-t", name], {
     name: "xterm-color",
-    cols: 80,
+    cols: 95,
     rows: 30,
     cwd: process.env.HOME,
     env: process.env,
@@ -45,6 +53,10 @@ export function GET() {
 }
 
 /* NOTE this GET only uses capture-pane and it's not interactive
+export interface SessionResponse {
+  lines: string[];
+}
+
 export async function GET(
   _: NextRequest,
   { params }: { params: { name: string } }
@@ -80,33 +92,22 @@ export async function GET(
 export function DELETE(
   _: NextRequest,
   { params }: { params: { name: string } }
-): NextResponse<SpawnError | { detail: string }> {
+): NextResponse<SpawnError | Details> {
   const { name } = params;
 
-  const spawnRes = spawnSync(`tmux kill-session -t ${name}`, {
-    shell: true,
-  });
+  try {
+    deleteSession(name);
+  } catch (err) {
+    if (err instanceof TmuxError) {
+      if (err.message === "Session not found") {
+        return notFound();
+      }
 
-  if (spawnRes.status !== 0) {
-    // Session not found error
-    if (spawnRes.stderr.toString().trim().startsWith("can't find")) {
-      return NextResponse.json(
-        { detail: "Session not found" },
-        { status: 404 }
-      );
+      return InternalServerError(err);
     }
-
-    // General error
-    return NextResponse.json(
-      {
-        exitCode: spawnRes.status ?? -1,
-        stderr: spawnRes.stderr.toString(),
-      },
-      { status: 500 }
-    );
   }
 
   return NextResponse.json({
-    detail: "Session deleted",
+    details: "Session deleted",
   });
 }

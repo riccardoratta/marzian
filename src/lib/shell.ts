@@ -1,8 +1,11 @@
 import { execSync, spawnSync } from "child_process";
+import { existsSync, mkdirSync } from "fs";
+import { homedir } from "os";
+import path from "path";
 
 export const getPIDbyName = (name: string): number | undefined => {
   // Find the PID of the command launched
-  const spawnRes = spawnSync(`pgrep -f -n "echo 'marzian:${name}'"`, {
+  const spawnRes = spawnSync(`pgrep -f -n "${name}"`, {
     shell: true,
   });
 
@@ -25,3 +28,12 @@ export const getPIDbyName = (name: string): number | undefined => {
 // }; done`;
 
 export const stayOpenScript = `exec ${process.env.DEFAULT_SHELL ?? "bash"}`;
+
+export const getMarzianDir = () => {
+  const marzianDir = path.join(homedir(), ".marzian");
+  if (!existsSync(marzianDir)) {
+    mkdirSync(marzianDir);
+  }
+
+  return marzianDir;
+};

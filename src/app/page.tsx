@@ -1,9 +1,6 @@
-"use client";
-
-import { useRetrieve } from "tqa/hooks/crud";
-import type { SessionsResponse, Session } from "./api/sessions/route";
 import {
   AppShell,
+  AppShellMain,
   Card,
   Text,
   Flex,
@@ -15,29 +12,20 @@ import {
 import { formatDistance } from "date-fns";
 import { IconCircle } from "@tabler/icons-react";
 import classes from "./page.module.css";
+import { type Session, getSessions } from "@/utils/data";
 
 export default function HomePage() {
-  const { isLoading, data } = useRetrieve<"retrieve", SessionsResponse>(
-    "/api/sessions",
-    {
-      reactQuery: { queryKey: ["sessions"] },
-      axios: { method: "get" },
-    }
-  );
-
-  if (isLoading) {
-    return <span>Loading..</span>;
-  }
+  const sessions = getSessions();
 
   return (
     <AppShell>
-      <AppShell.Main p="lg">
+      <AppShellMain p="lg">
         <Title order={2} mb="sm">
           Sessions
         </Title>
         <Card p={0} withBorder>
-          {data !== undefined && data.response.sessions.length !== 0 ? (
-            data.response.sessions.map((session) => (
+          {sessions.length !== 0 ? (
+            sessions.map((session) => (
               <Session key={session.name} session={session}></Session>
             ))
           ) : (
@@ -46,7 +34,7 @@ export default function HomePage() {
             </Text>
           )}
         </Card>
-      </AppShell.Main>
+      </AppShellMain>
     </AppShell>
   );
 }

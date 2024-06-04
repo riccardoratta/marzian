@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 
 const encoder = new TextEncoder();
 
+// TODO: https://socket.io/how-to/use-with-nextjs
 export function GET(
   _: NextRequest,
   { params }: { params: { name: string } }

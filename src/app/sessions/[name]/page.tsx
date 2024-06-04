@@ -7,6 +7,7 @@ import { IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { io } from "socket.io-client";
 
 export default function SessionPage({ params }: { params: { name: string } }) {
   const { name } = params;
@@ -14,18 +15,30 @@ export default function SessionPage({ params }: { params: { name: string } }) {
   const terminalRef = useRef<TerminalMethods>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource(`/api/sessions/${name}`);
-    eventSource.onmessage = (e) => {
-      terminalRef.current?.write(
-        Buffer.from(e.data as string, "base64").toString("utf8")
-      );
-    };
-    eventSource.onerror = (err) => {
-      console.error("EventSource failed:", err);
-    };
-    return () => {
-      eventSource.close();
-    };
+    const socket = io(`/${name}`);
+
+    socket.on("connect", () => {
+      socket.on("data", (data) => {
+        console.log(`received: ${data}`);
+      });
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error(err);
+    });
+
+    // const eventSource = new EventSource(`/api/sessions/${name}`);
+    // eventSource.onmessage = (e) => {
+    //   terminalRef.current?.write(
+    //     Buffer.from(e.data as string, "base64").toString("utf8")
+    //   );
+    // };
+    // eventSource.onerror = (err) => {
+    //   console.error("EventSource failed:", err);
+    // };
+    // return () => {
+    //   eventSource.close();
+    // };
   }, [name]);
 
   const router = useRouter();

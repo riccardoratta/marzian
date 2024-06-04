@@ -1,3 +1,4 @@
+import { setupTmuxSocket } from "@/lib/tmux-socket";
 import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";
@@ -19,15 +20,7 @@ void app.prepare().then(() => {
 
   const io = new Server(httpServer);
 
-  io.on("connection", (socket) => {
-    console.log("a user connected");
-    socket.on("message", (msg) => {
-      console.log("message: " + msg);
-    });
-    socket.on("disconnect", () => {
-      console.log("user disconnected");
-    });
-  });
+  setupTmuxSocket(io);
 
   httpServer
     .once("error", (err) => {

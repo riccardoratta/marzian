@@ -16,8 +16,6 @@ import SessionTile from "@/components/session-tile/session-tile";
 import { useRetrieve } from "tqa/hooks/crud";
 import { IconDots, IconPlus } from "@tabler/icons-react";
 import { SessionsResponse } from "@/utils/interfaces";
-import { useEffect } from "react";
-import { socket } from "@/utils/socket";
 
 export default function HomePage() {
   const { isLoading, data } = useRetrieve<"retrieve", SessionsResponse>(
@@ -27,10 +25,6 @@ export default function HomePage() {
       axios: { method: "get" },
     }
   );
-
-  useEffect(() => {
-    socket.emit("message", "Hello, world!");
-  }, []);
 
   if (isLoading) {
     return <span>Loading..</span>;

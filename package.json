@@ -31,6 +31,7 @@
     "react-cookie": "^7.1.4",
     "react-dom": "^18",
     "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
     "tqa": "^2.0.9",
     "zod": "^3.23.8",
     "zustand": "^4.5.2"

@@ -20,7 +20,13 @@ void app.prepare().then(() => {
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
-    console.log(socket);
+    console.log("a user connected");
+    socket.on("message", (msg) => {
+      console.log("message: " + msg);
+    });
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
+    });
   });
 
   httpServer

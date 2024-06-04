@@ -9,4 +9,9 @@
     "isolatedModules": false,
     "noEmit": false,
   },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  }
 }

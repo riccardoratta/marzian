@@ -11,8 +11,8 @@
   "scripts": {
     "setup": "esno scripts/install",
     "dev": "nodemon",
-    "build": "next build && tsc --project tsconfig.server.json",
-    "start": "cross-env NODE_ENV=production node dist/server.js",
+    "build": "next build",
+    "start": "cross-env NODE_ENV=production tsx src/server.ts",
     "lint": "next lint"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "axios": "^1.7.2",
+    "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
     "next": "14.2.3",
     "node-pty": "^1.0.0",
@@ -49,7 +50,6 @@
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "^1.15.0",
     "postcss-simple-vars": "^7.0.1",
-    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5"
   }

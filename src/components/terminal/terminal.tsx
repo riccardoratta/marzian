@@ -38,6 +38,20 @@ const TerminalComponent = forwardRef<TerminalMethods>(
         }
 
         terminalRef.current.resize(95, 30);
+
+        // TODO wheel scroll handler
+        // const lineHeight =
+        //   terminalContainerRef.current?.querySelector(".xterm-rows")
+        //     ?.children[0].clientHeight ?? 16;
+
+        // terminalRef.current.attachCustomWheelEventHandler((event) => {
+        //   console.log(
+        //     event.deltaMode,
+        //     event.deltaY,
+        //     Math.floor(event.deltaY / lineHeight)
+        //   );
+        //   return true;
+        // });
       };
 
       void initTerminal();

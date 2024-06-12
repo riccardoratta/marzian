@@ -1,4 +1,4 @@
-import { setupTmuxSocket } from "@/lib/tmux-socket";
+import { setupSocketHandler } from "@/lib/socket";
 import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";
@@ -20,7 +20,7 @@ void app.prepare().then(() => {
 
   const io = new Server(httpServer);
 
-  setupTmuxSocket(io);
+  setupSocketHandler(io);
 
   httpServer
     .once("error", (err) => {
@@ -28,6 +28,6 @@ void app.prepare().then(() => {
       process.exit(1);
     })
     .listen(port, () => {
-      console.log(`> Ready on http://${hostname}:${port}`);
+      console.log(`Ready on http://${hostname}:${port}`);
     });
 });

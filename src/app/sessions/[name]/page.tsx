@@ -2,12 +2,16 @@
 
 import { TerminalComponent, TerminalMethods } from "@/components/terminal";
 import { api } from "@/utils/http";
+import {
+  SocketClientToServerEvents,
+  SocketServerToClientEvents,
+} from "@/utils/interfaces";
 import { ActionIcon, AppShell, Card, Group, Text } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 export default function SessionPage({ params }: { params: { name: string } }) {
   const { name } = params;
@@ -15,11 +19,18 @@ export default function SessionPage({ params }: { params: { name: string } }) {
   const terminalRef = useRef<TerminalMethods>(null);
 
   useEffect(() => {
-    const socket = io(`/${name}`);
+    const socket: Socket<
+      SocketServerToClientEvents,
+      SocketClientToServerEvents
+    > = io(`/${name}`);
 
     socket.on("connect", () => {
+      terminalRef.current?.clear();
       socket.on("data", (data) => {
-        console.log(`received: ${data}`);
+        console.log(`received ${data.length} bytes`);
+        terminalRef.current?.write(
+          Buffer.from(data, "base64").toString("utf8")
+        );
       });
     });
 
@@ -27,18 +38,9 @@ export default function SessionPage({ params }: { params: { name: string } }) {
       console.error(err);
     });
 
-    // const eventSource = new EventSource(`/api/sessions/${name}`);
-    // eventSource.onmessage = (e) => {
-    //   terminalRef.current?.write(
-    //     Buffer.from(e.data as string, "base64").toString("utf8")
-    //   );
-    // };
-    // eventSource.onerror = (err) => {
-    //   console.error("EventSource failed:", err);
-    // };
-    // return () => {
-    //   eventSource.close();
-    // };
+    return () => {
+      socket.close();
+    };
   }, [name]);
 
   const router = useRouter();

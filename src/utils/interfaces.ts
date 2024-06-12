@@ -31,3 +31,10 @@ export const SessionCreateRequest = z.object({
 export interface SessionCreateResponse {
   name: string;
 }
+
+export interface SocketServerToClientEvents {
+  data: (data: string) => void;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface SocketClientToServerEvents {}

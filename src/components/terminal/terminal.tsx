@@ -20,40 +20,36 @@ const TerminalComponent = forwardRef<
   { onData: (data: string) => void }
 >(function TerminalComponent(props, ref) {
   const terminalContainerRef = useRef<HTMLDivElement>(null);
-  const terminalRef = useRef<Terminal>();
+
+  const terminalRef = useRef<Terminal>(
+    new Terminal({
+      cols: 95,
+      rows: 30,
+    })
+  );
 
   const [initBuffer, setInitBuffer] = useState<string>("");
 
   useEffect(() => {
-    const initTerminal = () => {
-      terminalRef.current = new Terminal({
-        cols: 95,
-        rows: 30,
-      });
+    const currentRef = terminalRef.current;
+    // Attach terminalRef to its container
+    if (terminalContainerRef.current) {
+      currentRef.open(terminalContainerRef.current);
+    }
+    // Set resize
+    currentRef.resize(95, 30);
+  }, [terminalRef, terminalContainerRef]);
 
-      if (terminalContainerRef.current) {
-        terminalRef.current.open(terminalContainerRef.current);
-      }
-
-      if (initBuffer.length !== 0) {
-        terminalRef.current.write(initBuffer);
-      }
-
-      terminalRef.current.resize(95, 30);
-
-      terminalRef.current.onData((data) => {
-        props.onData(data);
-      });
-    };
-
-    void initTerminal();
+  useEffect(() => {
+    // Attach onData callback
+    const disposable = terminalRef.current.onData((data) => {
+      props.onData(data);
+    });
 
     return () => {
-      if (terminalRef.current) {
-        terminalRef.current.dispose();
-      }
+      disposable.dispose();
     };
-  }, [props]);
+  }, [terminalRef, props]);
 
   useImperativeHandle(
     ref,

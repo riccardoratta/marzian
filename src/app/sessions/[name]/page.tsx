@@ -6,8 +6,16 @@ import {
   SocketClientToServerEvents,
   SocketServerToClientEvents,
 } from "@/utils/interfaces";
-import { ActionIcon, AppShell, Card, Group, Text } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
+import {
+  ActionIcon,
+  AppShell,
+  Card,
+  Group,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import { useHotkeys, useToggle } from "@mantine/hooks";
+import { IconKeyboard, IconKeyboardOff, IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
@@ -20,6 +28,8 @@ export default function SessionPage({ params }: { params: { name: string } }) {
 
   const [socket, setSocket] =
     useState<Socket<SocketServerToClientEvents, SocketClientToServerEvents>>();
+
+  const [editable, toggleEditable] = useToggle([false, true]);
 
   useEffect(() => {
     const s = io(`/${name}`);
@@ -49,11 +59,11 @@ export default function SessionPage({ params }: { params: { name: string } }) {
 
   const dataHandler = useCallback(
     (data: string) => {
-      if (socket) {
+      if (socket && editable) {
         socket.emit("write", data);
       }
     },
-    [socket]
+    [socket, editable]
   );
 
   const router = useRouter();
@@ -67,20 +77,51 @@ export default function SessionPage({ params }: { params: { name: string } }) {
     }
   };
 
+  useHotkeys([["ctrl+K", () => toggleEditable()]]);
+
   return (
     <AppShell>
       <AppShell.Main m="lg">
         <Card withBorder padding={0}>
           <Group justify="space-between" px="md" py="xs">
             <Text fw={700}>{name}</Text>
-            <ActionIcon
-              variant="light"
-              color="red"
-              aria-label="Settings"
-              onClick={() => void deleteSession()}
-            >
-              <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
-            </ActionIcon>
+            <Group gap="xs">
+              <Tooltip label="Keyboard">
+                <ActionIcon
+                  size="md"
+                  variant="light"
+                  onClick={() => void toggleEditable()}
+                  color={!editable ? "gray" : undefined}
+                >
+                  {editable ? (
+                    <IconKeyboard
+                      style={{
+                        width: "70%",
+                        height: "70%",
+                      }}
+                      stroke={1.5}
+                    />
+                  ) : (
+                    <IconKeyboardOff
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+              <ActionIcon
+                size="md"
+                variant="light"
+                color="red"
+                aria-label="Settings"
+                onClick={() => void deleteSession()}
+              >
+                <IconTrash
+                  style={{ width: "70%", height: "70%" }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Group>
           </Group>
           <TerminalComponent ref={terminalRef} onData={dataHandler} />
         </Card>

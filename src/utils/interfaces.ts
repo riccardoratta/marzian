@@ -37,4 +37,6 @@ export interface SocketServerToClientEvents {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SocketClientToServerEvents {}
+export interface SocketClientToServerEvents {
+  write: (data: string) => void;
+}

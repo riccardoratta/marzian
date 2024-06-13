@@ -41,7 +41,11 @@ export const setupSocketHandler = (
     const p = spawnTmux(sessionName);
 
     p.onData((data) => {
-      socket.emit("data", Buffer.from(data).toString("base64"));
+      socket.emit("data", data);
+    });
+
+    socket.on("write", (data) => {
+      p.write(data);
     });
 
     socket.on("disconnect", () => {

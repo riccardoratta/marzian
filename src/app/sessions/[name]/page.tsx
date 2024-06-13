@@ -9,7 +9,7 @@ import {
 import { ActionIcon, AppShell, Card, Group, Text } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -18,30 +18,43 @@ export default function SessionPage({ params }: { params: { name: string } }) {
 
   const terminalRef = useRef<TerminalMethods>(null);
 
+  const [socket, setSocket] =
+    useState<Socket<SocketServerToClientEvents, SocketClientToServerEvents>>();
+
   useEffect(() => {
-    const socket: Socket<
-      SocketServerToClientEvents,
-      SocketClientToServerEvents
-    > = io(`/${name}`);
-
-    socket.on("connect", () => {
-      terminalRef.current?.clear();
-      socket.on("data", (data) => {
-        console.log(`received ${data.length} bytes`);
-        terminalRef.current?.write(
-          Buffer.from(data, "base64").toString("utf8")
-        );
-      });
-    });
-
-    socket.on("connect_error", (err) => {
-      console.error(err);
-    });
+    const s = io(`/${name}`);
+    setSocket(s);
 
     return () => {
-      socket.close();
+      s.close();
     };
   }, [name]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("connect", () => {
+        console.log("Connected to socket");
+        terminalRef.current?.clear();
+        socket.on("data", (data) => {
+          console.log(`received ${data.length} bytes`);
+          terminalRef.current?.write(data);
+        });
+      });
+
+      socket.on("connect_error", (err) => {
+        console.error(err);
+      });
+    }
+  }, [socket]);
+
+  const dataHandler = useCallback(
+    (data: string) => {
+      if (socket) {
+        socket.emit("write", data);
+      }
+    },
+    [socket]
+  );
 
   const router = useRouter();
 
@@ -69,7 +82,7 @@ export default function SessionPage({ params }: { params: { name: string } }) {
               <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
             </ActionIcon>
           </Group>
-          <TerminalComponent ref={terminalRef} />
+          <TerminalComponent ref={terminalRef} onData={dataHandler} />
         </Card>
       </AppShell.Main>
     </AppShell>

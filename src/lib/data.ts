@@ -115,17 +115,40 @@ export const deleteSession = (name: string) => {
   if (spawnRes.status !== 0) {
     // Session not found error
     if (spawnRes.stderr.toString().trim().startsWith("can't find")) {
-      return new TmuxError("Session not found.");
+      throw new TmuxError("Session not found.");
     }
 
     // General error
-    return new TmuxError(undefined, {
+    throw new TmuxError(undefined, {
       spawnArgs: `tmux kill-session -t ${name}`.split(" "),
       exitCode: spawnRes.status,
       stdout: spawnRes.stdout.toString(),
       stderr: spawnRes.stderr.toString(),
     });
   }
+};
+
+export const captureSession = (name: string) => {
+  const spawnRes = spawnSync(`tmux capture-pane -p -t ${name}`, {
+    shell: true,
+  });
+
+  if (spawnRes.status !== 0) {
+    // Session not found error
+    if (spawnRes.stderr.toString().trim().startsWith("can't find")) {
+      throw new TmuxError("Session not found.");
+    }
+
+    // General error
+    throw new TmuxError(undefined, {
+      spawnArgs: `tmux capture-pane -p -t ${name}`.split(" "),
+      exitCode: spawnRes.status,
+      stdout: spawnRes.stdout.toString(),
+      stderr: spawnRes.stderr.toString(),
+    });
+  }
+
+  return spawnRes.stdout.toString();
 };
 
 interface TmuxErrorContext {

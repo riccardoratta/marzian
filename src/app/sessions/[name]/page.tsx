@@ -17,6 +17,7 @@ import {
 } from "@mantine/core";
 import { useHotkeys, useToggle } from "@mantine/hooks";
 import {
+  IconDownload,
   IconKeyboard,
   IconKeyboardOff,
   IconRepeat,
@@ -122,7 +123,19 @@ export default function SessionPage({ params }: { params: { name: string } }) {
               >
                 Replay
               </Button>
-
+              <ActionIcon
+                size="md"
+                variant="default"
+                aria-label="Download session"
+                className={classes.toolbarbutton}
+                component="a"
+                href={`/api/sessions/${name}`}
+              >
+                <IconDownload
+                  className={classes.toolbarbuttonicon}
+                  stroke={1.5}
+                />
+              </ActionIcon>
               <ActionIcon
                 size="md"
                 variant="light"

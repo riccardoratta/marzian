@@ -18,7 +18,7 @@ export const notFound = (objectName = "Session") => {
   );
 };
 
-export const InternalServerError = (error?: unknown) => {
+export const internalServerError = (error?: unknown) => {
   if (error !== undefined) console.error(error);
   return NextResponse.json(
     {

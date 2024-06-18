@@ -5,7 +5,7 @@ import {
   SessionCreateResponse,
   SessionsResponse,
 } from "@/utils/interfaces";
-import { badRequest, InternalServerError } from "@/utils/server";
+import { badRequest, internalServerError } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,7 @@ export async function POST(
       }
     }
 
-    return InternalServerError(err);
+    return internalServerError(err);
   }
 
   return NextResponse.json({ name });

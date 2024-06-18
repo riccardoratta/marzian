@@ -1,25 +1,43 @@
-import { execSync, spawnSync } from "child_process";
+import { execSync } from "child_process";
 import { existsSync, mkdirSync } from "fs";
 import { homedir } from "os";
 import path from "path";
 
 export const getPIDbyName = (name: string): number | undefined => {
+  const scriptPath = path.join(getMarzianDir(), name);
+
   // Find the PID of the command launched
-  const spawnRes = spawnSync(`pgrep -f -n "${name}"`, {
-    shell: true,
-  });
+  try {
+    const psRes = execSync(
+      `ps -eo pid,command | grep -w "${scriptPath}" | grep -v "tmux" | grep -v "grep"`
+    );
 
-  const result = spawnRes.stdout.toString().trim();
+    // Filter PIDs with regex
+    const PIDs = psRes
+      .toString()
+      .split("\n")
+      .map((line) => {
+        if (line.length !== 0) {
+          const match = line.match(/(\d+ )(.+)/);
+          if (match) {
+            return parseInt(match[1].trim());
+          }
+        }
+      });
 
-  if (result.length !== 0) {
-    const pid = parseInt(result);
-
-    // Check if the PID is acually from the script inside tmux
-    if (
-      !execSync(`ps -p ${pid} -o command=`).toString().trim().startsWith("tmux")
-    ) {
-      return pid;
+    for (const PID of PIDs) {
+      if (PID) {
+        return PID;
+      }
     }
+  } catch (err) {
+    // console.log(err, "status" in err, err.status === 1);
+    // @ts-expect-error catch when exitCode in err
+    if ("status" in err && err.status === 1) {
+      return undefined;
+    }
+
+    throw err;
   }
 };
 

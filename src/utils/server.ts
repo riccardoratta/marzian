@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
 
+export const badRequest = (details: string) => {
+  return NextResponse.json(
+    {
+      details,
+    },
+    { status: 400 }
+  );
+};
+
 export const notFound = (objectName = "Session") => {
   return NextResponse.json(
     {

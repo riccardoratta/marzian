@@ -1,4 +1,5 @@
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import "@/app/globals.css";
 
 import { cookies } from "next/headers";

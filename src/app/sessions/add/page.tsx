@@ -13,7 +13,9 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { IconPlayerPlay } from "@tabler/icons-react";
+import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 
@@ -37,8 +39,26 @@ export default function AddSessionPage() {
 
   const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
     try {
-      await api.post("/api/sessions", data);
-      router.replace(`/sessions/${data.name}`);
+      try {
+        await api.post("/api/sessions", data);
+        router.replace(`/sessions/${data.name}`);
+      } catch (err) {
+        if (isAxiosError(err)) {
+          if (err.response && "details" in err.response.data) {
+            return notifications.show({
+              title: "Error",
+              message: (err.response.data as { details: string }).details,
+              color: "red",
+            });
+          }
+        }
+
+        notifications.show({
+          title: "Error",
+          message: "A generic error occurred, retry layer.",
+          color: "red",
+        });
+      }
     } catch (err) {
       console.error(err);
     }

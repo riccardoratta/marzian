@@ -1,11 +1,11 @@
-import { createSession, getSessions } from "@/lib/data";
+import { createSession, getSessions, TmuxError } from "@/lib/data";
 import {
   Details,
   SessionCreateRequest,
   SessionCreateResponse,
   SessionsResponse,
 } from "@/utils/interfaces";
-import { InternalServerError } from "@/utils/server";
+import { badRequest, InternalServerError } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +24,12 @@ export async function POST(
   try {
     await createSession(name, command);
   } catch (err) {
+    if (err instanceof TmuxError) {
+      if (err.message) {
+        return badRequest(err.message);
+      }
+    }
+
     return InternalServerError(err);
   }
 

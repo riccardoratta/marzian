@@ -8,6 +8,7 @@ import {
   Container,
   type MantineColorScheme,
 } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 
 import { colorSchemeManager } from "@/store/color-scheme";
 import { useThemeStore } from "@/store/theme";
@@ -53,6 +54,7 @@ export default function Providers({ children, cookies }: ProvidersProps) {
             cssVariablesResolver={theme.resolver}
           >
             <Container>{children}</Container>
+            <Notifications zIndex={1000} />
           </MantineProvider>
         )}
       </ConsumerProvider>

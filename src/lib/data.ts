@@ -83,14 +83,20 @@ export const createSession = (name: string, command: string) => {
       if (code === 0) {
         resolve();
       } else {
-        reject(
-          new TmuxError(
-            `tmux new-session non-zero exit code (${code})\n` +
-              `spawn args: ${spawnRes.spawnargs.join(", ")}\n` +
-              `stdout: ${stdout}\n` +
-              `stderr: ${stderr}`
-          )
-        );
+        if (stderr.toString().trim().startsWith("duplicate session")) {
+          reject(
+            new TmuxError("There is another tmux session with the same name.")
+          );
+        } else {
+          reject(
+            new TmuxError(undefined, {
+              spawnArgs: spawnRes.spawnargs,
+              exitCode: spawnRes.exitCode,
+              stdout,
+              stderr,
+            })
+          );
+        }
       }
     });
   });
@@ -109,23 +115,35 @@ export const deleteSession = (name: string) => {
   if (spawnRes.status !== 0) {
     // Session not found error
     if (spawnRes.stderr.toString().trim().startsWith("can't find")) {
-      return new TmuxError("Session not found");
+      return new TmuxError("Session not found.");
     }
 
     // General error
-    return new TmuxError(
-      `tmux kill-session non zero-exit code (${spawnRes.status})\n` +
-        `stdout: ${spawnRes.stdout.toString()}\n` +
-        `stderr: ${spawnRes.stderr.toString()}`
-    );
+    return new TmuxError(undefined, {
+      spawnArgs: `tmux kill-session -t ${name}`.split(" "),
+      exitCode: spawnRes.status,
+      stdout: spawnRes.stdout.toString(),
+      stderr: spawnRes.stderr.toString(),
+    });
   }
 };
 
+interface TmuxErrorContext {
+  spawnArgs: string[];
+  exitCode: number | null;
+  stdout: string;
+  stderr: string;
+}
+
 export class TmuxError extends Error {
-  constructor(message: string) {
+  context: TmuxErrorContext | undefined;
+
+  constructor(message?: string, context?: TmuxErrorContext) {
     super(message);
     // Set the name property to the class name
     this.name = "TmuxError";
+
+    this.context = context;
 
     // Set the prototype explicitly to ensure `instanceof` works correctly
     Object.setPrototypeOf(this, TmuxError.prototype);

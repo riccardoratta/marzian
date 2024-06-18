@@ -10,6 +10,7 @@ import {
   Group,
   Menu,
   rem,
+  Skeleton,
   Text,
 } from "@mantine/core";
 import SessionTile from "@/components/session-tile/session-tile";
@@ -25,10 +26,6 @@ export default function HomePage() {
       axios: { method: "get" },
     }
   );
-
-  if (isLoading) {
-    return <span>Loading..</span>;
-  }
 
   return (
     <AppShell>
@@ -57,7 +54,9 @@ export default function HomePage() {
             </Menu>
           </Group>
           <Divider />
-          {data && data.response.sessions.length !== 0 ? (
+          {isLoading ? (
+            <ListSkeleton />
+          ) : data && data.response.sessions.length !== 0 ? (
             data.response.sessions.map((session) => (
               <SessionTile key={session.name} session={session}></SessionTile>
             ))
@@ -72,5 +71,28 @@ export default function HomePage() {
         </Card>
       </AppShell.Main>
     </AppShell>
+  );
+}
+
+function ListSkeleton() {
+  return (
+    <>
+      <Flex my={23.5} mx={15} gap={20}>
+        <Group flex={1}>
+          <Skeleton height={10} width={45} />
+          <Skeleton height={10} width={80} />
+        </Group>
+        <Skeleton height={10} width={80} />
+        <Skeleton height={10} circle mr={10} />
+      </Flex>
+      <Flex my={23.5} mx={15} gap={20}>
+        <Group flex={1}>
+          <Skeleton height={10} width={65} />
+          <Skeleton height={10} width={80} />
+        </Group>
+        <Skeleton height={10} width={80} />
+        <Skeleton height={10} circle mr={10} />
+      </Flex>
+    </>
   );
 }

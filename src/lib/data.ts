@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from "child_process";
 import { getMarzianDir, getPIDbyName, stayOpenScript } from "@/lib/shell";
-import { writeFileSync, rmSync, existsSync } from "fs";
+import { writeFileSync, rmSync, existsSync, readFileSync } from "fs";
 import path from "path";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
@@ -48,6 +48,21 @@ export const getSession = (name: string): Session | undefined => {
   for (const session of getSessions()) {
     if (session.name === name) {
       return session;
+    }
+  }
+};
+
+export const getSessionWithCommand = (
+  name: string
+): (Session & { command: string }) | undefined => {
+  for (const session of getSessions()) {
+    if (session.name === name) {
+      return {
+        ...session,
+        command: readFileSync(path.join(getMarzianDir(), name))
+          .toString()
+          .replace(`\n${stayOpenScript}`, ""),
+      };
     }
   }
 };

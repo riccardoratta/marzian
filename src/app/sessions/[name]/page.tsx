@@ -9,7 +9,6 @@ import {
 import {
   ActionIcon,
   AppShell,
-  Button,
   Card,
   Group,
   Text,
@@ -20,7 +19,6 @@ import {
   IconDownload,
   IconKeyboard,
   IconKeyboardOff,
-  IconRepeat,
   IconTrash,
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
@@ -115,21 +113,21 @@ export default function SessionPage({ params }: { params: { name: string } }) {
                   )}
                 </ActionIcon>
               </Tooltip>
-              <Button
+              {/* <Button
                 size="xs"
                 variant="light"
-                aria-label="Replay"
+                aria-label="Restart"
                 leftSection={<IconRepeat size={14} stroke={1.5} />}
               >
-                Replay
-              </Button>
+                Restart
+              </Button> */}
               <ActionIcon
                 size="md"
                 variant="default"
                 aria-label="Download session"
                 className={classes.toolbarbutton}
                 component="a"
-                href={`/api/sessions/${name}`}
+                href={`/api/sessions/${name}/download`}
               >
                 <IconDownload
                   className={classes.toolbarbuttonicon}

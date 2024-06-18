@@ -9,6 +9,10 @@ export interface Details {
   details: string;
 }
 
+export interface SessionResponse extends Session {
+  command: string;
+}
+
 export interface SessionsResponse {
   sessions: Session[];
 }

@@ -153,7 +153,7 @@ export default function AddSessionPage() {
                 Additional settings
               </Button>
               <Button rightSection={<IconPlayerPlay size={14} />} type="submit">
-                Submit
+                Start
               </Button>
             </Group>
           </form>

@@ -3,3 +3,13 @@
         background-color: var(--mantine-color-default-hover)
     }
 }
+
+.toolbarbutton {
+    width: 30px;
+    height: 30px;
+
+    .toolbarbuttonicon {
+        width: 70%;
+        height: 70%;
+    }
+}

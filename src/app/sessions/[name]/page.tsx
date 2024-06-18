@@ -9,17 +9,24 @@ import {
 import {
   ActionIcon,
   AppShell,
+  Button,
   Card,
   Group,
   Text,
   Tooltip,
 } from "@mantine/core";
 import { useHotkeys, useToggle } from "@mantine/hooks";
-import { IconKeyboard, IconKeyboardOff, IconTrash } from "@tabler/icons-react";
+import {
+  IconKeyboard,
+  IconKeyboardOff,
+  IconRepeat,
+  IconTrash,
+} from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
+import classes from "@/app/page.module.css";
 
 export default function SessionPage({ params }: { params: { name: string } }) {
   const { name } = params;
@@ -86,40 +93,45 @@ export default function SessionPage({ params }: { params: { name: string } }) {
           <Group justify="space-between" px="md" py="xs">
             <Text fw={700}>{name}</Text>
             <Group gap="xs">
-              <Tooltip label="Keyboard">
+              <Tooltip label="Interactive">
                 <ActionIcon
                   size="md"
                   variant="light"
                   onClick={() => void toggleEditable()}
                   color={!editable ? "gray" : undefined}
+                  className={classes.toolbarbutton}
                 >
                   {editable ? (
                     <IconKeyboard
-                      style={{
-                        width: "70%",
-                        height: "70%",
-                      }}
+                      className={classes.toolbarbuttonicon}
                       stroke={1.5}
                     />
                   ) : (
                     <IconKeyboardOff
-                      style={{ width: "70%", height: "70%" }}
+                      className={classes.toolbarbuttonicon}
                       stroke={1.5}
                     />
                   )}
                 </ActionIcon>
               </Tooltip>
+              <Button
+                size="xs"
+                variant="light"
+                aria-label="Replay"
+                leftSection={<IconRepeat size={14} stroke={1.5} />}
+              >
+                Replay
+              </Button>
+
               <ActionIcon
                 size="md"
                 variant="light"
                 color="red"
                 aria-label="Settings"
                 onClick={() => void deleteSession()}
+                className={classes.toolbarbutton}
               >
-                <IconTrash
-                  style={{ width: "70%", height: "70%" }}
-                  stroke={1.5}
-                />
+                <IconTrash className={classes.toolbarbuttonicon} stroke={1.5} />
               </ActionIcon>
             </Group>
           </Group>

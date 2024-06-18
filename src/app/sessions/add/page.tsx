@@ -7,26 +7,32 @@ import {
   Button,
   Card,
   Center,
+  Collapse,
   Group,
+  Paper,
   Textarea,
   TextInput,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useToggle } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { IconPlayerPlay } from "@tabler/icons-react";
+import {
+  IconArrowBarDown,
+  IconArrowBarUp,
+  IconPlayerPlay,
+} from "@tabler/icons-react";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-
-const testCommand =
-  "for ((i=50; i>=1; i--)); do echo 'Hello'; sleep 1; done; echo 'Countdown complete!'";
 
 export default function AddSessionPage() {
   const form = useForm({
     initialValues: {
       name: "",
       command: "",
+      postCommand: process.env.NEXT_PUBLIC_DEFAULT_POST_COMMAND,
     },
     validate: {
       name: (value) =>
@@ -36,6 +42,10 @@ export default function AddSessionPage() {
   });
 
   const router = useRouter();
+
+  const [openedAdditionalSettings, toggleAdditionalSettings] = useToggle();
+
+  const theme = useMantineTheme();
 
   const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
     try {
@@ -71,7 +81,15 @@ export default function AddSessionPage() {
           <Title order={3}>Add Session</Title>
         </Center>
         <Card mt="md" withBorder shadow="0">
-          <form onSubmit={form.onSubmit((values) => void addSession(values))}>
+          <form
+            onSubmit={form.onSubmit(
+              (values) =>
+                void addSession({
+                  name: values.name,
+                  command: `${values.command}\n${values.postCommand}`,
+                })
+            )}
+          >
             <TextInput
               label="Name"
               description="Valid charachters are letters, numbers, and dashes."
@@ -95,12 +113,44 @@ export default function AddSessionPage() {
                 },
               }}
             />
+            <Collapse in={openedAdditionalSettings} pt="1px">
+              <Paper
+                withBorder
+                mt="md"
+                p="md"
+                style={{ backgroundColor: theme.colors.gray[0] }}
+              >
+                <Title order={6}>Additional Settings</Title>
+                <Textarea
+                  mt="md"
+                  label="Post command"
+                  key={form.key("postCommand")}
+                  autosize
+                  minRows={1}
+                  {...form.getInputProps("postCommand")}
+                  styles={{
+                    input: {
+                      fontFamily: "monospace",
+                      fontSize: 12,
+                      paddingTop: 8,
+                    },
+                  }}
+                />
+              </Paper>
+            </Collapse>
             <Group justify="flex-end" mt="md">
               <Button
-                color="grey"
-                onClick={() => form.setFieldValue("command", testCommand)}
+                variant="default"
+                onClick={() => toggleAdditionalSettings()}
+                rightSection={
+                  openedAdditionalSettings ? (
+                    <IconArrowBarUp size={14} />
+                  ) : (
+                    <IconArrowBarDown size={14} />
+                  )
+                }
               >
-                Test Command
+                Additional settings
               </Button>
               <Button rightSection={<IconPlayerPlay size={14} />} type="submit">
                 Submit

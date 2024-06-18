@@ -13,6 +13,7 @@ import {
   Textarea,
   TextInput,
   Title,
+  useComputedColorScheme,
   useMantineTheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -46,6 +47,8 @@ export default function AddSessionPage() {
   const [openedAdditionalSettings, toggleAdditionalSettings] = useToggle();
 
   const theme = useMantineTheme();
+
+  const colorScheme = useComputedColorScheme();
 
   const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
     try {
@@ -118,7 +121,12 @@ export default function AddSessionPage() {
                 withBorder
                 mt="md"
                 p="md"
-                style={{ backgroundColor: theme.colors.gray[0] }}
+                style={{
+                  backgroundColor:
+                    colorScheme === "light"
+                      ? theme.colors.gray[0]
+                      : theme.colors.dark[5],
+                }}
               >
                 <Title order={6}>Additional Settings</Title>
                 <Textarea

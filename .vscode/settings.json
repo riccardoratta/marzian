@@ -1,10 +1,13 @@
 {
-  "editor.rulers": [80],
+  "editor.rulers": [
+    80
+  ],
   "cssVariables.lookupFiles": [
     "**/*.css",
     "**/*.scss",
     "**/*.sass",
     "**/*.less",
     "node_modules/@mantine/core/styles.css"
-  ]
+  ],
+  "editor.tabSize": 2
 }

@@ -89,7 +89,11 @@ export default function AddSessionPage() {
               (values) =>
                 void addSession({
                   name: values.name,
-                  command: `${values.command}\n${values.postCommand}`,
+                  // Append post command if present (and replace $name)
+                  command: `${values.command}\n${values.postCommand?.replaceAll(
+                    "$name",
+                    values.name
+                  )}`,
                 })
             )}
           >
@@ -132,6 +136,7 @@ export default function AddSessionPage() {
                 <Textarea
                   mt="md"
                   label="Post command"
+                  description="Use $name to insert session name in script."
                   key={form.key("postCommand")}
                   autosize
                   minRows={1}

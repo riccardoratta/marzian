@@ -20,7 +20,7 @@ export function GET(
     });
   } catch (err) {
     if (err instanceof TmuxError) {
-      if (err.message === "Session not found") {
+      if (err.message === "Session not found.") {
         return notFound();
       }
     }

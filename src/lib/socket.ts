@@ -25,7 +25,7 @@ export const setupSocketHandler = (
       next(null, true);
     } else {
       // Session not found
-      console.warn("session not found");
+      console.warn("Session not found.");
       next(
         {
           name: "SessionNotFound",

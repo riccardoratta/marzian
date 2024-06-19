@@ -30,7 +30,7 @@ export function DELETE(
     deleteSession(name);
   } catch (err) {
     if (err instanceof TmuxError) {
-      if (err.message === "Session not found") {
+      if (err.message === "Session not found.") {
         return notFound();
       }
 
@@ -39,6 +39,6 @@ export function DELETE(
   }
 
   return NextResponse.json({
-    details: "Session deleted",
+    details: "Session deleted.",
   });
 }

@@ -15,7 +15,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { useHotkeys, useToggle } from "@mantine/hooks";
+import { useToggle } from "@mantine/hooks";
 import {
   IconDownload,
   IconKeyboard,
@@ -93,8 +93,6 @@ export default function SessionPage({ params }: { params: { name: string } }) {
       console.error(err);
     }
   };
-
-  useHotkeys([["ctrl+K", () => toggleEditable()]]);
 
   return (
     <AppShell>

@@ -99,8 +99,10 @@ export default function AddSessionPage() {
                   // Append post command if present (and replace $name)
                   command: `${values.command}${
                     values.postCommand
-                      ? +"\n" +
-                        values.postCommand.replaceAll("$name", values.name)
+                      ? `\n${values.postCommand.replaceAll(
+                          "$name",
+                          values.name
+                        )}`
                       : ""
                   }`,
                 })

@@ -2,6 +2,7 @@
 
 import { api } from "@/utils/http";
 import { SessionCreateRequest, sessionNameSchema } from "@/utils/interfaces";
+import { sleep } from "@/utils/misc";
 import {
   AppShell,
   Button,
@@ -26,6 +27,7 @@ import {
 } from "@tabler/icons-react";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { z } from "zod";
 
 export default function AddSessionPage() {
@@ -50,7 +52,11 @@ export default function AddSessionPage() {
 
   const colorScheme = useComputedColorScheme();
 
+  const [loading, setLoading] = useState(false);
+
   const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
+    setLoading(true);
+    await sleep(1);
     try {
       try {
         await api.post("/api/sessions", data);
@@ -58,6 +64,7 @@ export default function AddSessionPage() {
       } catch (err) {
         if (isAxiosError(err)) {
           if (err.response && "details" in err.response.data) {
+            setLoading(false);
             return notifications.show({
               title: "Error",
               message: (err.response.data as { details: string }).details,
@@ -74,6 +81,8 @@ export default function AddSessionPage() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,7 +174,11 @@ export default function AddSessionPage() {
               >
                 Additional settings
               </Button>
-              <Button rightSection={<IconPlayerPlay size={14} />} type="submit">
+              <Button
+                rightSection={<IconPlayerPlay size={14} />}
+                type="submit"
+                loading={loading}
+              >
                 Start
               </Button>
             </Group>

@@ -9,3 +9,7 @@ export const createStore = <T>(state: StateCreator<T>) =>
     subscribeWithSelector<T>((...args) => state(...args)),
     shallow
   );
+
+export function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}

@@ -67,12 +67,29 @@ export const getSessionWithCommand = (
   }
 };
 
-export const createSession = (name: string, command: string) => {
+/**
+ * Create a new session.
+ * @param name - The name of the session to create.
+ * @param command - (Optional) The command sent to the session. If not present,
+ * it will be used the command in the `scriptPath`, if `scriptPath` doesn't
+ * exist an error will be thrown.
+ */
+export const createSession = (name: string, command?: string) => {
   console.log(`Creating new tmux session with name ${name}`);
 
   const scriptPath = path.join(getMarzianDir(), name);
 
-  writeFileSync(scriptPath, `${command};\n${stayOpenScript}`, { mode: 0o755 });
+  if (command) {
+    writeFileSync(scriptPath, `${command};\n${stayOpenScript}`, {
+      mode: 0o755,
+    });
+  } else {
+    // If scriptPath doesn't exists
+    if (!existsSync(scriptPath)) {
+      // Throw an error
+      throw new Error(`File scriptPath "${scriptPath}" doesn't exist.`);
+    }
+  }
 
   const spawnRes = spawn(
     "tmux",
@@ -117,12 +134,11 @@ export const createSession = (name: string, command: string) => {
   });
 };
 
-export const deleteSession = (name: string) => {
-  const scriptPath = path.join(getMarzianDir(), name);
-  if (existsSync(scriptPath)) {
-    rmSync(scriptPath);
-  }
-
+/**
+ * Kill a session using tmux `kill-session`.
+ * @param name - The name of the session to kill.
+ */
+const killSession = (name: string) => {
   const spawnRes = spawnSync(`tmux kill-session -t ${name}`, {
     shell: true,
   });
@@ -141,6 +157,30 @@ export const deleteSession = (name: string) => {
       stderr: spawnRes.stderr.toString(),
     });
   }
+};
+
+/**
+ * Delete a session from the file system and kill it from tmux (using
+ * `killSession`).
+ * @param name - The name of the session to delete.
+ */
+export const deleteSession = (name: string) => {
+  const scriptPath = path.join(getMarzianDir(), name);
+  if (existsSync(scriptPath)) {
+    rmSync(scriptPath);
+  }
+
+  killSession(name);
+};
+
+/**
+ * Restart a session. The script in the `scriptPath` will be used to restart the
+ * same script.
+ * @param name - The name of the session to restart.
+ */
+export const restartSession = (name: string) => {
+  killSession(name);
+  return createSession(name);
 };
 
 export const captureSession = (name: string) => {

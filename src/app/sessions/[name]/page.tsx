@@ -9,6 +9,7 @@ import {
 import {
   ActionIcon,
   AppShell,
+  Button,
   Card,
   Group,
   Text,
@@ -19,6 +20,7 @@ import {
   IconDownload,
   IconKeyboard,
   IconKeyboardOff,
+  IconRepeat,
   IconTrash,
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
@@ -83,6 +85,15 @@ export default function SessionPage({ params }: { params: { name: string } }) {
     }
   };
 
+  const restartSession = async () => {
+    try {
+      await api.post(`/api/sessions/${name}/restart`);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useHotkeys([["ctrl+K", () => toggleEditable()]]);
 
   return (
@@ -113,14 +124,15 @@ export default function SessionPage({ params }: { params: { name: string } }) {
                   )}
                 </ActionIcon>
               </Tooltip>
-              {/* <Button
+              <Button
                 size="xs"
                 variant="light"
                 aria-label="Restart"
+                onClick={() => void restartSession()}
                 leftSection={<IconRepeat size={14} stroke={1.5} />}
               >
                 Restart
-              </Button> */}
+              </Button>
               <ActionIcon
                 size="md"
                 variant="default"

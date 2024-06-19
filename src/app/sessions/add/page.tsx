@@ -55,7 +55,7 @@ export default function AddSessionPage() {
 
   const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
     setLoading(true);
-        try {
+    try {
       try {
         await api.post("/api/sessions", data);
         router.replace(`/sessions/${data.name}`);
@@ -97,10 +97,12 @@ export default function AddSessionPage() {
                 void addSession({
                   name: values.name,
                   // Append post command if present (and replace $name)
-                  command: `${values.command}\n${values.postCommand?.replaceAll(
-                    "$name",
-                    values.name
-                  )}`,
+                  command: `${values.command}${
+                    values.postCommand
+                      ? +"\n" +
+                        values.postCommand.replaceAll("$name", values.name)
+                      : ""
+                  }`,
                 })
             )}
           >

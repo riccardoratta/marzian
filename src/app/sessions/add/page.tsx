@@ -2,7 +2,6 @@
 
 import { api } from "@/utils/http";
 import { SessionCreateRequest, sessionNameSchema } from "@/utils/interfaces";
-import { sleep } from "@/utils/misc";
 import {
   AppShell,
   Button,
@@ -56,8 +55,7 @@ export default function AddSessionPage() {
 
   const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
     setLoading(true);
-    await sleep(1);
-    try {
+        try {
       try {
         await api.post("/api/sessions", data);
         router.replace(`/sessions/${data.name}`);

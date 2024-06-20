@@ -12,8 +12,11 @@
     "setup": "esno scripts/install",
     "dev": "nodemon",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production tsx src/server.ts",
+    "start": "cross-env NODE_ENV=production ./src/server.ts",
     "lint": "next lint"
+  },
+  "bin": {
+    "marzian": "marzian"
   },
   "dependencies": {
     "@mantine/core": "^7.10.1",

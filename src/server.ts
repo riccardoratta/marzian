@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { setupSocketHandler } from "@/lib/socket";
 import { createServer } from "http";
 import next from "next";
@@ -7,7 +9,11 @@ const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
 
+// console.log(process.argv);
+
 const app = next({
+  customServer: true,
+  dir: process.argv.length === 3 ? process.argv[2] : undefined,
   dev,
   hostname,
   port,

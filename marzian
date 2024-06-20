@@ -1,0 +1,5 @@
+#!/bin/bash
+
+project="$(dirname "$(realpath "$0")")"
+
+npx cross-env NODE_ENV=production "$project/src/server.ts" "$project"

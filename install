@@ -1,4 +1,21 @@
 #!/bin/bash
 
+if not command -v node &> /dev/null; then
+    echo "NODEJS NOT is installed, installing NVM and NODEJS 18"
+
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+    nvm install 18
+fi
+
+node_version=$(node --version)
+
+if ! [[ "$node_version" == v18.* ]]; then
+    echo "Warning! You are not using node.js version 18, this application is not guaranteed to work."
+fi
+
+npm install -g cross-env
+npm install -g tsx
+
 npm run build
 npm link

@@ -31,6 +31,7 @@ fi
 npm install -g cross-env
 npm install -g tsx
 
+npm i esno
 npm run setup
 npm run build
 npm link

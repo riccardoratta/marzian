@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { setupSocketHandler } from "@/lib/socket";
+import { setupSocketHandler } from "./lib/socket";
 import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";
@@ -8,8 +8,6 @@ import { Server } from "socket.io";
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
-
-// console.log(process.argv);
 
 const app = next({
   customServer: true,

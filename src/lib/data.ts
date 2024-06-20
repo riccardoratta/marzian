@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from "child_process";
-import { getMarzianDir, getPIDbyName, stayOpenScript } from "@/lib/shell";
+import { getMarzianDir, getPIDbyName, stayOpenScript } from "../lib/shell";
 import { writeFileSync, rmSync, existsSync, readFileSync } from "fs";
 import path from "path";
 

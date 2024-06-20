@@ -4,14 +4,14 @@ if which node > /dev/null; then
 	# Ok, pass..
 	:
 else
-    echo "NODEJS NOT is installed, installing NVM and NODEJS 18"
-
-    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-    exec bash
-
+  if which nvm > /dev/null; then
+    # node.js is not installed, but nvm yes
     nvm install 18
-    nvm use 18
+  else
+    # node.js is not installed, neither nvm
+    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    echo "Please close the console and launch again this script!"
+  fi
 fi
 
 node_version=$(node --version)

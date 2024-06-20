@@ -6,14 +6,17 @@ import next from "next";
 import { Server } from "socket.io";
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
-const port = 3000;
+const port = process.env.PORT ?? 3000;
+
+if (dev) {
+  console.log("Development mode");
+}
 
 const app = next({
   customServer: true,
   dir: process.argv.length === 3 ? process.argv[2] : undefined,
   dev,
-  hostname,
+  hostname: "localhost",
   port,
 });
 const handler = app.getRequestHandler();
@@ -32,6 +35,6 @@ void app.prepare().then(() => {
       process.exit(1);
     })
     .listen(port, () => {
-      console.log(`Ready on http://${hostname}:${port}`);
+      console.log(`Listening on port ${port}`);
     });
 });

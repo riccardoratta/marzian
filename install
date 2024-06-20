@@ -1,11 +1,17 @@
 #!/bin/bash
 
-if not command -v node &> /dev/null; then
+if which node > /dev/null; then
+	# Ok, pass..
+	:
+else
     echo "NODEJS NOT is installed, installing NVM and NODEJS 18"
 
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+    exec bash
 
     nvm install 18
+    nvm use 18
 fi
 
 node_version=$(node --version)

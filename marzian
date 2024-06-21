@@ -2,4 +2,10 @@
 
 project="$(dirname "$(realpath "$0")")"
 
-npx cross-env NODE_ENV=production "$project/src/server.ts" "$project"
+portArg=""
+
+if [ $# -ge 2 ]; then
+  portArg="$1 $2"
+fi
+
+npx cross-env NODE_ENV=production "$project/src/server.ts" --path "$project" $portArg

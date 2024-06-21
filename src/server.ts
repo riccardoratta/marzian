@@ -4,20 +4,32 @@ import { setupSocketHandler } from "./lib/socket";
 import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";
+import { Option, program } from "commander";
+
+program
+  .option("--path <path>", "project path")
+  .addOption(new Option("--port <number>", "port number").default(undefined));
+
+// Parse the command line arguments
+program.parse();
+const options: { path: string; port?: number } = program.opts();
 
 const dev = process.env.NODE_ENV !== "production";
-const port = process.env.PORT ?? 3000;
 
 if (dev) {
   console.log("Development mode");
 }
 
+if (!options.port) {
+  options.port = dev ? 3000 : 8080;
+}
+
 const app = next({
   customServer: true,
-  dir: process.argv.length === 3 ? process.argv[2] : undefined,
+  dir: options["path"],
   dev,
   hostname: "localhost",
-  port,
+  port: options["port"],
 });
 const handler = app.getRequestHandler();
 
@@ -34,7 +46,7 @@ void app.prepare().then(() => {
       console.error(err);
       process.exit(1);
     })
-    .listen(port, () => {
-      console.log(`Listening on http://localhost:${port}`);
+    .listen(app.port, () => {
+      console.log(`Listening on http://localhost:${app.port}`);
     });
 });

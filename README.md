@@ -19,35 +19,53 @@ Ti voglio bene.
 - npm (latest)
 - esno (latest)
 
-## 2. Install and run
+## 2. Setup and run (development)
 
-### Install
+### Setup
 
 ```bash
 npm run setup
 ```
 
-### Run (development)
+### Run
 
 ```bash
 npm run dev
 ```
 
-## 3. Build and run
-
-### Local
-
-#### Build
+It is possible to specify the port with
 
 ```bash
-npm run build
+npm run dev -- port 4000
 ```
 
-#### Run (production)
+Otherwise it defaults to 3000 (default development port).
+
+## 3. Install and run
+
+### Install
 
 ```bash
-npm run start
+./install
 ```
+
+The installation script is intended to be "battery-included". If node is not installed on the system, it will be pulled with [nvm](https://github.com/nvm-sh/nvm) (v. 18). Also the install script takes care of enabling marzian globally.
+
+### Run
+
+From anywhere in the system
+
+```
+marzian
+```
+
+It is possible to specify the port with
+
+```
+marzian --port 4000
+```
+
+Otherwise it defaults to 8080 (default production port).
 
 ## 4. Variables
 

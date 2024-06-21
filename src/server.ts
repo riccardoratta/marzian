@@ -35,6 +35,6 @@ void app.prepare().then(() => {
       process.exit(1);
     })
     .listen(port, () => {
-      console.log(`Listening on port ${port}`);
+      console.log(`Listening on http://localhost:${port}`);
     });
 });

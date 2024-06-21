@@ -184,7 +184,7 @@ export const restartSession = (name: string) => {
 };
 
 export const captureSession = (name: string) => {
-  const spawnRes = spawnSync(`tmux capture-pane -p -t ${name}`, {
+  const spawnRes = spawnSync(`tmux capture-pane -p -t -J ${name}`, {
     shell: true,
   });
 

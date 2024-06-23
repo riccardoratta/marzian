@@ -3,11 +3,11 @@
 import { api } from "@/utils/http";
 import { SessionCreateRequest, sessionNameSchema } from "@/utils/interfaces";
 import {
-  AppShell,
   Button,
   Card,
   Center,
   Collapse,
+  Container,
   Group,
   Paper,
   Textarea,
@@ -85,108 +85,103 @@ export default function AddSessionPage() {
   };
 
   return (
-    <AppShell>
-      <AppShell.Main p="lg">
-        <Center>
-          <Title order={3}>Add Session</Title>
-        </Center>
-        <Card mt="md" withBorder shadow="0">
-          <form
-            onSubmit={form.onSubmit(
-              (values) =>
-                void addSession({
-                  name: values.name,
-                  // Append post command if present (and replace $name)
-                  command: `${values.command}${
-                    values.postCommand
-                      ? `\n${values.postCommand.replaceAll(
-                          "$name",
-                          values.name
-                        )}`
-                      : ""
-                  }`,
-                })
-            )}
-          >
-            <TextInput
-              label="Name"
-              description="Valid charachters are letters, numbers, and dashes."
-              placeholder="example_123"
-              key={form.key("name")}
-              {...form.getInputProps("name")}
-            />
-            <Textarea
+    <Container py="lg">
+      <Center>
+        <Title order={3}>Add Session</Title>
+      </Center>
+      <Card mt="md" withBorder shadow="0">
+        <form
+          onSubmit={form.onSubmit(
+            (values) =>
+              void addSession({
+                name: values.name,
+                // Append post command if present (and replace $name)
+                command: `${values.command}${
+                  values.postCommand
+                    ? `\n${values.postCommand.replaceAll("$name", values.name)}`
+                    : ""
+                }`,
+              })
+          )}
+        >
+          <TextInput
+            label="Name"
+            description="Valid charachters are letters, numbers, and dashes."
+            placeholder="example_123"
+            key={form.key("name")}
+            {...form.getInputProps("name")}
+          />
+          <Textarea
+            mt="md"
+            label="Command"
+            placeholder="ls -lah home"
+            key={form.key("command")}
+            autosize
+            minRows={1}
+            {...form.getInputProps("command")}
+            styles={{
+              input: {
+                fontFamily: "monospace",
+                fontSize: 12,
+                paddingTop: 8,
+              },
+            }}
+          />
+          <Collapse in={openedAdditionalSettings} pt="1px">
+            <Paper
+              withBorder
               mt="md"
-              label="Command"
-              placeholder="ls -lah home"
-              key={form.key("command")}
-              autosize
-              minRows={1}
-              {...form.getInputProps("command")}
-              styles={{
-                input: {
-                  fontFamily: "monospace",
-                  fontSize: 12,
-                  paddingTop: 8,
-                },
+              p="md"
+              style={{
+                backgroundColor:
+                  colorScheme === "light"
+                    ? theme.colors.gray[0]
+                    : theme.colors.dark[5],
               }}
-            />
-            <Collapse in={openedAdditionalSettings} pt="1px">
-              <Paper
-                withBorder
+            >
+              <Title order={6}>Additional Settings</Title>
+              <Textarea
                 mt="md"
-                p="md"
-                style={{
-                  backgroundColor:
-                    colorScheme === "light"
-                      ? theme.colors.gray[0]
-                      : theme.colors.dark[5],
+                label="Post command"
+                description="Use $name to insert session name in script."
+                key={form.key("postCommand")}
+                autosize
+                minRows={1}
+                {...form.getInputProps("postCommand")}
+                styles={{
+                  input: {
+                    fontFamily: "monospace",
+                    fontSize: 12,
+                    paddingTop: 8,
+                  },
                 }}
-              >
-                <Title order={6}>Additional Settings</Title>
-                <Textarea
-                  mt="md"
-                  label="Post command"
-                  description="Use $name to insert session name in script."
-                  key={form.key("postCommand")}
-                  autosize
-                  minRows={1}
-                  {...form.getInputProps("postCommand")}
-                  styles={{
-                    input: {
-                      fontFamily: "monospace",
-                      fontSize: 12,
-                      paddingTop: 8,
-                    },
-                  }}
-                />
-              </Paper>
-            </Collapse>
-            <Group justify="flex-end" mt="md">
-              <Button
-                variant="default"
-                onClick={() => toggleAdditionalSettings()}
-                rightSection={
-                  openedAdditionalSettings ? (
-                    <IconArrowBarUp size={14} />
-                  ) : (
-                    <IconArrowBarDown size={14} />
-                  )
-                }
-              >
-                Additional settings
-              </Button>
-              <Button
-                rightSection={<IconPlayerPlay size={14} />}
-                type="submit"
-                loading={loading}
-              >
-                Start
-              </Button>
-            </Group>
-          </form>
-        </Card>
-      </AppShell.Main>
-    </AppShell>
+              />
+            </Paper>
+          </Collapse>
+          <Group justify="flex-end" mt="md">
+            <Button
+              variant="default"
+              onClick={() => toggleAdditionalSettings()}
+              rightSection={
+                openedAdditionalSettings ? (
+                  <IconArrowBarUp size={14} />
+                ) : (
+                  <IconArrowBarDown size={14} />
+                )
+              }
+            >
+              Additional settings
+            </Button>
+            <Button
+              rightSection={<IconPlayerPlay size={14} />}
+              type="submit"
+              loading={loading}
+            >
+              Start
+            </Button>
+          </Group>
+        </form>
+      </Card>
+    </Container>
   );
 }

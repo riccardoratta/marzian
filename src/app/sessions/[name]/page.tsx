@@ -8,9 +8,9 @@ import {
 } from "@/utils/interfaces";
 import {
   ActionIcon,
-  AppShell,
   Button,
   Card,
+  Container,
   Group,
   Text,
   Tooltip,
@@ -95,70 +95,68 @@ export default function SessionPage({ params }: { params: { name: string } }) {
   };
 
   return (
-    <AppShell>
-      <AppShell.Main m="lg">
-        <Card withBorder padding={0}>
-          <Group justify="space-between" px="md" py="xs">
-            <Text fw={700}>{name}</Text>
-            <Group gap="xs">
-              <Tooltip label="Interactive">
-                <ActionIcon
-                  size="md"
-                  variant="light"
-                  onClick={() => void toggleEditable()}
-                  color={!editable ? "gray" : undefined}
-                  className={classes.toolbarbutton}
-                >
-                  {editable ? (
-                    <IconKeyboard
-                      className={classes.toolbarbuttonicon}
-                      stroke={1.5}
-                    />
-                  ) : (
-                    <IconKeyboardOff
-                      className={classes.toolbarbuttonicon}
-                      stroke={1.5}
-                    />
-                  )}
-                </ActionIcon>
-              </Tooltip>
-              <Button
-                size="xs"
-                variant="light"
-                aria-label="Restart"
-                onClick={() => void restartSession()}
-                leftSection={<IconRepeat size={14} stroke={1.5} />}
-              >
-                Restart
-              </Button>
-              <ActionIcon
-                size="md"
-                variant="default"
-                aria-label="Download session"
-                className={classes.toolbarbutton}
-                component="a"
-                href={`/api/sessions/${name}/download`}
-              >
-                <IconDownload
-                  className={classes.toolbarbuttonicon}
-                  stroke={1.5}
-                />
-              </ActionIcon>
+    <Container py="lg">
+      <Card withBorder padding={0}>
+        <Group justify="space-between" px="md" py="xs">
+          <Text fw={700}>{name}</Text>
+          <Group gap="xs">
+            <Tooltip label="Interactive">
               <ActionIcon
                 size="md"
                 variant="light"
-                color="red"
-                aria-label="Settings"
-                onClick={() => void deleteSession()}
+                onClick={() => void toggleEditable()}
+                color={!editable ? "gray" : undefined}
                 className={classes.toolbarbutton}
               >
-                <IconTrash className={classes.toolbarbuttonicon} stroke={1.5} />
+                {editable ? (
+                  <IconKeyboard
+                    className={classes.toolbarbuttonicon}
+                    stroke={1.5}
+                  />
+                ) : (
+                  <IconKeyboardOff
+                    className={classes.toolbarbuttonicon}
+                    stroke={1.5}
+                  />
+                )}
               </ActionIcon>
-            </Group>
+            </Tooltip>
+            <Button
+              size="xs"
+              variant="light"
+              aria-label="Restart"
+              onClick={() => void restartSession()}
+              leftSection={<IconRepeat size={14} stroke={1.5} />}
+            >
+              Restart
+            </Button>
+            <ActionIcon
+              size="md"
+              variant="default"
+              aria-label="Download session"
+              className={classes.toolbarbutton}
+              component="a"
+              href={`/api/sessions/${name}/download`}
+            >
+              <IconDownload
+                className={classes.toolbarbuttonicon}
+                stroke={1.5}
+              />
+            </ActionIcon>
+            <ActionIcon
+              size="md"
+              variant="light"
+              color="red"
+              aria-label="Settings"
+              onClick={() => void deleteSession()}
+              className={classes.toolbarbutton}
+            >
+              <IconTrash className={classes.toolbarbuttonicon} stroke={1.5} />
+            </ActionIcon>
           </Group>
-          <TerminalComponent ref={terminalRef} onData={dataHandler} />
-        </Card>
-      </AppShell.Main>
-    </AppShell>
+        </Group>
+        <TerminalComponent ref={terminalRef} onData={dataHandler} />
+      </Card>
+    </Container>
   );
 }

@@ -35,7 +35,7 @@ type ThemeDefinition = Readonly<{
 
 export interface ThemeState {
   theme: ThemeDefinition;
-  themes: Readonly<ThemeDefinition[]>;
+  themes: readonly ThemeDefinition[];
   setTheme: (themeId: ThemeDefinition["id"]) => void;
   getTheme: (themeId: ThemeDefinition["id"]) => ThemeDefinition | undefined;
 }

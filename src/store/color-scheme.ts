@@ -21,7 +21,7 @@ type ColorSchemeDefinition = Readonly<{
   label: string;
 }>;
 
-export const colorSchemes: Readonly<ColorSchemeDefinition[]> = [
+export const colorSchemes: readonly ColorSchemeDefinition[] = [
   { id: "light", label: "Light", icon: IconSun },
   { id: "dark", label: "Dark", icon: IconMoon },
   { id: "auto", label: "Auto", icon: IconBrightness },

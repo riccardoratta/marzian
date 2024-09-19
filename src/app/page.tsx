@@ -14,7 +14,7 @@ import {
   Text,
 } from "@mantine/core";
 import SessionTile from "@/components/session-tile/session-tile";
-import { useRetrieve } from "tqa/hooks/crud";
+import { useRetrieve } from "@cappelletti/query-concierge/hooks/crud";
 import { IconDots, IconPlus } from "@tabler/icons-react";
 import { SessionsResponse } from "@/utils/interfaces";
 

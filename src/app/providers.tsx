@@ -12,7 +12,8 @@ import { Notifications } from "@mantine/notifications";
 
 import { colorSchemeManager } from "@/store/color-scheme";
 import { useThemeStore } from "@/store/theme";
-import { Consumer, ConsumerProvider } from "tqa";
+import { Concierge } from "@cappelletti/query-concierge";
+import { ConciergeProvider } from "@cappelletti/query-concierge/context";
 import { api } from "@/utils/http";
 
 export interface ProvidersProps {
@@ -24,7 +25,7 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
 });
 
-const consumer = new Consumer(api);
+const consumer = new Concierge(api);
 
 const { getTheme, setTheme } = useThemeStore.getState();
 
@@ -45,7 +46,7 @@ export default function Providers({ children, cookies }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ConsumerProvider consumer={consumer}>
+      <ConciergeProvider concierge={consumer}>
         {loading ? null : (
           <MantineProvider
             defaultColorScheme={colorScheme}
@@ -57,7 +58,7 @@ export default function Providers({ children, cookies }: ProvidersProps) {
             <Notifications zIndex={1000} />
           </MantineProvider>
         )}
-      </ConsumerProvider>
+      </ConciergeProvider>
     </QueryClientProvider>
   );
 }

@@ -1,6 +1,6 @@
-# marzian
+# Marzian
 
-Ti voglio bene.
+Run and manage your long running processes.
 
 ## Table of contents
 
@@ -15,9 +15,8 @@ Ti voglio bene.
 
 ## 1. Requirements
 
-- Node.js (21.7.3)
-- npm (latest)
-- esno (latest)
+- Node.js
+- npm
 
 ## 2. Development
 

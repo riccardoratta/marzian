@@ -54,7 +54,7 @@ export default function Providers({ children, cookies }: ProvidersProps) {
             theme={theme.data}
             cssVariablesResolver={theme.resolver}
           >
-            <Container>{children}</Container>
+            <Container fluid>{children}</Container>
             <Notifications zIndex={1000} />
           </MantineProvider>
         )}

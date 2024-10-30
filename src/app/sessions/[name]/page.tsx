@@ -95,7 +95,7 @@ export default function SessionPage({ params }: { params: { name: string } }) {
   };
 
   return (
-    <Container py="lg">
+    <Container py="xl" px={0}>
       <Card withBorder padding={0}>
         <Group justify="space-between" px="md" py="xs">
           <Text fw={700}>{name}</Text>
@@ -155,6 +155,7 @@ export default function SessionPage({ params }: { params: { name: string } }) {
             </ActionIcon>
           </Group>
         </Group>
+
         <TerminalComponent ref={terminalRef} onData={dataHandler} />
       </Card>
     </Container>

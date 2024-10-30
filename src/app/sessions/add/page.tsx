@@ -85,11 +85,11 @@ export default function AddSessionPage() {
   };
 
   return (
-    <Container py="lg">
-      <Center>
+    <Container py="xl" px={0}>
+      <Center mb="md">
         <Title order={3}>Add Session</Title>
       </Center>
-      <Card mt="md" withBorder shadow="0">
+      <Card withBorder>
         <form
           onSubmit={form.onSubmit(
             (values) =>

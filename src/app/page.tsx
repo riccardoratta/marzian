@@ -4,6 +4,7 @@ import {
   ActionIcon,
   Anchor,
   Card,
+  Center,
   Container,
   Divider,
   Flex,
@@ -12,6 +13,7 @@ import {
   rem,
   Skeleton,
   Text,
+  Title,
 } from "@mantine/core";
 import SessionTile from "@/components/session-tile/session-tile";
 import { useRetrieve } from "@cappelletti/query-concierge/hooks/crud";
@@ -28,7 +30,10 @@ export default function HomePage() {
   );
 
   return (
-    <Container my="lg">
+    <Container py="xl" px={0}>
+      <Center mb="md">
+        <Title order={3}>Marzian</Title>
+      </Center>
       <Card withBorder padding={0}>
         <Group justify="space-between" px="md" py="xs">
           <Text fw={700}>Sessions</Text>

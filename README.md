@@ -5,8 +5,8 @@ Ti voglio bene.
 ## Table of contents
 
 1. [Requirements](#1-requirements)
-2. [Install and run](#2-install-and-run)
-3. [Build and run](#3-build-and-run)
+2. [Development](#2-development)
+3. [Install and run](#3-install-and-run)
 4. [Variables](#4-variables)
 
 [Changelog](CHANGELOG.md)
@@ -19,7 +19,7 @@ Ti voglio bene.
 - npm (latest)
 - esno (latest)
 
-## 2. Setup and run (development)
+## 2. Development
 
 ### Setup
 
@@ -27,7 +27,7 @@ Ti voglio bene.
 npm run setup
 ```
 
-### Run
+### Run development
 
 ```bash
 npm run dev
@@ -55,13 +55,13 @@ The installation script is intended to be "battery-included". If node is not ins
 
 From anywhere in the system
 
-```
+```shell
 marzian
 ```
 
 It is possible to specify the port with
 
-```
+```shell
 marzian --port 4000
 ```
 

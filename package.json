@@ -38,6 +38,7 @@
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "tsx": "^4.19.2",
+    "use-sync-external-store": "^1.4.0",
     "zod": "^3.23.8",
     "zustand": "^5.0.0"
   },

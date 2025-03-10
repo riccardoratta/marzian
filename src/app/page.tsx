@@ -9,9 +9,11 @@ import {
   Divider,
   Flex,
   Group,
+  Image,
   Menu,
   rem,
   Skeleton,
+  Stack,
   Text,
   Title,
 } from "@mantine/core";
@@ -19,6 +21,7 @@ import SessionTile from "@/components/session-tile/session-tile";
 import { useRetrieve } from "@cappelletti/query-concierge/hooks/crud";
 import { IconDots, IconPlus } from "@tabler/icons-react";
 import { SessionsResponse } from "@/utils/interfaces";
+import logo from "@/utils/logo";
 
 export default function HomePage() {
   const { isLoading, data } = useRetrieve<"retrieve", SessionsResponse>(
@@ -32,7 +35,12 @@ export default function HomePage() {
   return (
     <Container py="xl" px={0}>
       <Center mb="md">
-        <Title order={3}>Marzian</Title>
+        <Stack align="center" justify="center">
+          <Image src={logo} alt="Marzian logo" h={50} w={50} />
+          <Title order={3} style={{ letterSpacing: 3, color: "#868e96" }}>
+            MARZIAN
+          </Title>
+        </Stack>
       </Center>
       <Card withBorder padding={0}>
         <Group justify="space-between" px="md" py="xs">

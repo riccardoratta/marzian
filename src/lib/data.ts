@@ -1,6 +1,12 @@
 import { spawn, spawnSync } from "child_process";
 import { getMarzianDir, getPIDbyName, stayOpenScript } from "../lib/shell";
-import { writeFileSync, rmSync, existsSync, readFileSync } from "fs";
+import {
+  writeFileSync,
+  rmSync,
+  existsSync,
+  readFileSync,
+  readdirSync,
+} from "fs";
 import path from "path";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
@@ -25,13 +31,18 @@ export const getSessions = (): Session[] => {
 
   const sessions: Session[] = [];
 
+  const sessionsInMarzianDir = readdirSync(getMarzianDir());
+
   for (const line of lsOutput.split("\n")) {
     if (line.length !== 0) {
       const match = lsRe.exec(line.trim());
       if (match) {
         // Check if the tmux session has only one window
         if (parseInt(match[2]) === 1) {
-          sessions.push({ name: match[1], createdAt: Date.parse(match[3]) });
+          // Check if session has been created by marzian
+          if (sessionsInMarzianDir.includes(match[1])) {
+            sessions.push({ name: match[1], createdAt: Date.parse(match[3]) });
+          }
         }
       }
     }

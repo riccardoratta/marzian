@@ -161,7 +161,9 @@ export default function AddSessionPage() {
           <Group justify="flex-end" mt="md">
             <Button
               variant="default"
-              onClick={() => toggleAdditionalSettings()}
+              onClick={() => {
+                toggleAdditionalSettings();
+              }}
               rightSection={
                 openedAdditionalSettings ? (
                   <IconArrowBarUp size={14} />

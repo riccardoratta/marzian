@@ -5,6 +5,5 @@ export const stdCookieStore: Cookies["set"] = (key, value, options) => {
   const now = new Date();
   const expires = new Date(now.getTime());
   expires.setUTCDate(now.getUTCDate() + DURATION_IN_DAYS);
-
-  new Cookies().set(key, value, { ...options, expires });
+  new Cookies().set(key, value, { path: "/", expires, ...options });
 };

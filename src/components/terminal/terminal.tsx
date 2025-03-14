@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
 import { Card } from "@mantine/core";
 import { Terminal } from "@xterm/xterm";
@@ -21,14 +15,12 @@ const TerminalComponent = forwardRef<
 >(function TerminalComponent(props, ref) {
   const terminalContainerRef = useRef<HTMLDivElement>(null);
 
-  const terminalRef = useRef<Terminal>(
+  const terminalRef = useRef(
     new Terminal({
       cols: 95,
       rows: 30,
     })
   );
-
-  const [initBuffer, setInitBuffer] = useState<string>("");
 
   useEffect(() => {
     const currentRef = terminalRef.current;
@@ -57,28 +49,20 @@ const TerminalComponent = forwardRef<
       return {
         writeln(value: string) {
           if (value.length !== 0) {
-            if (terminalRef.current) {
-              terminalRef.current.writeln(value);
-            }
+            terminalRef.current.writeln(value);
           }
         },
         write(value: string) {
           if (value.length !== 0) {
-            if (terminalRef.current) {
-              terminalRef.current.write(value);
-            } else {
-              setInitBuffer(initBuffer + value);
-            }
+            terminalRef.current.write(value);
           }
         },
         clear() {
-          if (terminalRef.current) {
-            terminalRef.current.clear();
-          }
+          terminalRef.current.clear();
         },
       };
     },
-    [initBuffer]
+    []
   );
 
   return (

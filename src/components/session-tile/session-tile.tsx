@@ -36,7 +36,9 @@ export default function SessionTile({ session }: { session: Session }) {
             </Text>
           )}
         </Group>
-        <Text mr="sm">{isActive ? `PID ${session.pid}` : "Terminated"}</Text>
+        <Text mr="sm">
+          {isActive ? `PID ${String(session.pid)}` : "Terminated"}
+        </Text>
         <IconCircle
           color={isActive ? theme.colors.green[6] : theme.colors.gray[4]}
         />

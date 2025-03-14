@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
+import { HttpStatusCode } from "axios";
 
 export const badRequest = (details: string) => {
   return NextResponse.json(
     {
       details,
     },
-    { status: 400 }
+    { status: HttpStatusCode.BadRequest }
   );
 };
 
@@ -14,7 +15,7 @@ export const notFound = (objectName = "Session") => {
     {
       details: `${objectName} not found`,
     },
-    { status: 404 }
+    { status: HttpStatusCode.NotFound }
   );
 };
 
@@ -24,6 +25,6 @@ export const internalServerError = (error?: unknown) => {
     {
       details: `Server error`,
     },
-    { status: 500 }
+    { status: HttpStatusCode.InternalServerError }
   );
 };

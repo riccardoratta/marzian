@@ -9,8 +9,6 @@ Run and manage your long running processes.
 3. [Install and run](#3-install-and-run)
 4. [Variables](#4-variables)
 
-[Changelog](CHANGELOG.md)
-
 [License](LICENSE.md)
 
 ## 1. Requirements
@@ -26,19 +24,26 @@ Run and manage your long running processes.
 npm run setup
 ```
 
-### Run development
+If you want to source your environment variables from somewhere else rather than
+from the provided .env file:
+
+```bash
+npm run setup -- --noenv
+```
+
+### Run (development)
 
 ```bash
 npm run dev
 ```
 
-It is possible to specify the port with
+Set a custom port by running:
 
 ```bash
-npm run dev -- port 4000
+npm run dev -- --port 4000
 ```
 
-Otherwise it defaults to 3000 (default development port).
+Defaults to `3000`.
 
 ## 3. Install and run
 
@@ -48,26 +53,29 @@ Otherwise it defaults to 3000 (default development port).
 ./install
 ```
 
-The installation script is intended to be "battery-included". If node is not installed on the system, it will be pulled with [nvm](https://github.com/nvm-sh/nvm) (v. 18). Also the install script takes care of enabling marzian globally.
+The installation script is designed to be "battery-included." If Node.js is not
+installed on the system, it will be installed using [nvm](https://github.com/nvm-sh/nvm)
+(v18). Additionally, the script ensures that Marzian is enabled globally.
 
-### Run
+### Run (production)
 
-From anywhere in the system
+From anywhere in the system:
 
 ```shell
 marzian
 ```
 
-It is possible to specify the port with
+Set a custom port by running:
 
 ```shell
 marzian --port 4000
 ```
 
-Otherwise it defaults to 8080 (default production port).
+Defaults to `8080`.
 
 ## 4. Variables
 
-See [`.env.template`](.env.template) for all the available variables.
+See [`.env.template`](.env.template) and [`next.config.ts`](next.config.ts) for
+all the available variables.
 
-Environment variables should be typed in [`process.d.ts`](process.d.ts).
+Environment variables should be typed in [`env.d.ts`](env.d.ts).

@@ -5,11 +5,11 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export function GET(
+export async function GET(
   _: NextRequest,
-  { params }: { params: { name: string } }
-): NextResponse<string | Details> {
-  const { name } = params;
+  { params }: { params: Promise<{ name: string }> }
+): Promise<NextResponse<string | Details>> {
+  const { name } = await params;
 
   try {
     return new NextResponse(captureSession(name), {

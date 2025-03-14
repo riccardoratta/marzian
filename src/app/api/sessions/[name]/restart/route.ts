@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   _: NextRequest,
-  { params }: { params: { name: string } }
+  { params }: { params: Promise<{ name: string }> }
 ): Promise<NextResponse<string | Details>> {
-  await restartSession(params.name);
+  await restartSession((await params).name);
 
   return NextResponse.json({
     details: "Session restarted.",

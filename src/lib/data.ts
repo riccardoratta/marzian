@@ -113,12 +113,12 @@ export const createSession = (name: string, command?: string) => {
   let stdout = "";
   let stderr = "";
 
-  spawnRes.stderr.on("data", (data) => {
-    stderr += data;
+  spawnRes.stderr.on("data", (data: unknown) => {
+    stderr += String(data);
   });
 
-  spawnRes.stdout.on("data", (data) => {
-    stdout += data;
+  spawnRes.stdout.on("data", (data: unknown) => {
+    stdout += String(data);
   });
 
   return new Promise<void>((resolve, reject) => {
@@ -238,7 +238,7 @@ export class TmuxError extends Error {
     Object.setPrototypeOf(this, TmuxError.prototype);
 
     // Optionally, capture the stack trace
-    if (Error.captureStackTrace) {
+    if (Object.hasOwn(Error, "captureStackTrace")) {
       Error.captureStackTrace(this, TmuxError);
     }
   }

@@ -15,7 +15,11 @@ export const Brand = (props: BrandProps) => {
 
   return (
     <div {...props}>
-      <UnstyledButton onClick={() => router.push("/")}>
+      <UnstyledButton
+        onClick={() => {
+          router.push("/");
+        }}
+      >
         <Text size={rem(24)} variant="gradient">
           {NAME}
         </Text>

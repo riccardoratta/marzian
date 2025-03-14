@@ -10,6 +10,7 @@
     "NextNav.NextNav",
     "vunguyentuan.vscode-postcss",
     "vunguyentuan.vscode-css-variables",
-    "meganrogge.template-string-converter"
+    "meganrogge.template-string-converter",
+    "dbaeumer.vscode-eslint"
   ]
 }

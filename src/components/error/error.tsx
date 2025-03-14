@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Fragment } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button, Group, Text, type ButtonProps } from "@mantine/core";
@@ -12,7 +13,6 @@ import {
   type IconProps,
 } from "@tabler/icons-react";
 
-import { Link } from "@/components/link";
 import { useThemeStore } from "@/store/theme";
 import { SHELL_BREAKPOINT } from "@/constants/app";
 import styles from "./error.module.css";
@@ -73,7 +73,9 @@ export const Error = ({
                   <Button
                     {...buttonProps}
                     variant="default"
-                    onClick={() => router.back()}
+                    onClick={() => {
+                      router.back();
+                    }}
                     leftSection={<IconArrowLeft {...iconProps} />}
                   >
                     Go back
@@ -98,7 +100,9 @@ export const Error = ({
               <Button
                 {...buttonProps}
                 variant="subtle"
-                onClick={() => router.refresh()}
+                onClick={() => {
+                  router.refresh();
+                }}
                 leftSection={<IconReload {...iconProps} />}
               >
                 Reload page

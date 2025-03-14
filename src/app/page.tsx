@@ -1,5 +1,7 @@
 "use client";
 
+import { useAxiosQuery } from "@caplit/axios-query";
+
 import {
   ActionIcon,
   Anchor,
@@ -18,19 +20,17 @@ import {
   Title,
 } from "@mantine/core";
 import SessionTile from "@/components/session-tile/session-tile";
-import { useRetrieve } from "@cappelletti/query-concierge/hooks/crud";
 import { IconDots, IconPlus } from "@tabler/icons-react";
 import { SessionsResponse } from "@/utils/interfaces";
 import logo from "@/utils/logo";
+import { api } from "@/utils/http";
 
 export default function HomePage() {
-  const { isLoading, data } = useRetrieve<"retrieve", SessionsResponse>(
-    "/api/sessions",
-    {
-      reactQuery: { queryKey: ["sessions"] },
-      axios: { method: "get" },
-    }
-  );
+  const { isLoading, data } = useAxiosQuery<SessionsResponse>({
+    client: api,
+    reactQuery: { queryKey: ["sessions"] },
+    axios: { url: "/api/sessions" },
+  });
 
   return (
     <Container py="xl" px={0}>
@@ -68,8 +68,8 @@ export default function HomePage() {
         <Divider />
         {isLoading ? (
           <ListSkeleton />
-        ) : data && data.response.sessions.length !== 0 ? (
-          data.response.sessions.map((session) => (
+        ) : data && data.data.sessions.length !== 0 ? (
+          data.data.sessions.map((session) => (
             <SessionTile key={session.name} session={session}></SessionTile>
           ))
         ) : (

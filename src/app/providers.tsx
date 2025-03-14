@@ -12,9 +12,6 @@ import { Notifications } from "@mantine/notifications";
 
 import { colorSchemeManager } from "@/store/color-scheme";
 import { useThemeStore } from "@/store/theme";
-import { Concierge } from "@cappelletti/query-concierge";
-import { ConciergeProvider } from "@cappelletti/query-concierge/context";
-import { api } from "@/utils/http";
 
 export interface ProvidersProps {
   children: ReactNode;
@@ -24,8 +21,6 @@ export interface ProvidersProps {
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
 });
-
-const consumer = new Concierge(api);
 
 const { getTheme, setTheme } = useThemeStore.getState();
 
@@ -46,19 +41,18 @@ export default function Providers({ children, cookies }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ConciergeProvider concierge={consumer}>
-        {loading ? null : (
-          <MantineProvider
-            defaultColorScheme={colorScheme}
-            colorSchemeManager={colorSchemeManager}
-            theme={theme.data}
-            cssVariablesResolver={theme.resolver}
-          >
-            <Container fluid>{children}</Container>
-            <Notifications zIndex={1000} />
-          </MantineProvider>
-        )}
-      </ConciergeProvider>
+      {loading ? null : (
+        <MantineProvider
+          defaultColorScheme={colorScheme}
+          colorSchemeManager={colorSchemeManager}
+          theme={theme.data}
+          cssVariablesResolver={theme.resolver}
+          classNamesPrefix="marzian"
+        >
+          <Container fluid>{children}</Container>
+          <Notifications zIndex={1000} />
+        </MantineProvider>
+      )}
     </QueryClientProvider>
   );
 }

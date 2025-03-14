@@ -27,29 +27,27 @@ export const colorSchemes: readonly ColorSchemeDefinition[] = [
   { id: "auto", label: "Auto", icon: IconBrightness },
 ];
 
-const CookieColorSchemeManager = (): MantineColorSchemeManager => {
-  const cookieStore = new Cookies();
+const CookieColorSchemeManager = (): MantineColorSchemeManager => ({
+  get: (defaultValue) => {
+    let value = new Cookies().get(COLOR_SCHEME) as
+      | MantineColorScheme
+      | undefined;
 
-  const getCurrentValue = (): MantineColorScheme | undefined =>
-    cookieStore.get(COLOR_SCHEME) as MantineColorScheme | undefined;
+    if (!value) value = defaultValue;
 
-  return {
-    get: (defaultValue) => getCurrentValue() || defaultValue,
+    return value;
+  },
 
-    set: (value) => {
-      const currentValue = getCurrentValue();
+  set: (value) => {
+    stdCookieStore(COLOR_SCHEME, value);
+  },
 
-      if (currentValue === value) {
-        return;
-      }
+  clear: () => {
+    new Cookies().remove(COLOR_SCHEME);
+  },
 
-      stdCookieStore(COLOR_SCHEME, value);
-    },
-
-    clear: () => cookieStore.remove(COLOR_SCHEME),
-    subscribe: () => undefined,
-    unsubscribe: () => undefined,
-  };
-};
+  subscribe: () => undefined,
+  unsubscribe: () => undefined,
+});
 
 export const colorSchemeManager = CookieColorSchemeManager();

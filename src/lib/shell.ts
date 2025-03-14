@@ -18,7 +18,7 @@ export const getPIDbyName = (name: string): number | undefined => {
       .split("\n")
       .map((line) => {
         if (line.length !== 0) {
-          const match = line.match(/(\d+ )(.+)/);
+          const match = /(\d+ )(.+)/.exec(line);
           if (match) {
             return parseInt(match[1].trim());
           }
@@ -45,7 +45,7 @@ export const getPIDbyName = (name: string): number | undefined => {
 //   process.env.DEFAULT_SHELL ?? "bash"
 // }; done`;
 
-export const stayOpenScript = `exec ${process.env.DEFAULT_SHELL ?? "bash"}`;
+export const stayOpenScript = `exec ${process.env.DEFAULT_SHELL || "bash"}`;
 
 export const getMarzianDir = () => {
   const marzianDir = path.join(homedir(), ".marzian");

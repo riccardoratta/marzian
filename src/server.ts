@@ -26,16 +26,15 @@ if (!options.port) {
 
 const app = next({
   customServer: true,
-  dir: options["path"],
+  dir: options.path,
   dev,
   hostname: "localhost",
-  port: options["port"],
+  port: options.port,
 });
 const handler = app.getRequestHandler();
 
 void app.prepare().then(() => {
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  const httpServer = createServer(handler);
+  const httpServer = createServer(void handler);
 
   const io = new Server(httpServer);
 
@@ -47,6 +46,6 @@ void app.prepare().then(() => {
       process.exit(1);
     })
     .listen(app.port, () => {
-      console.log(`Listening on http://localhost:${app.port}`);
+      console.log(`Listening on http://localhost:${String(app.port)}`);
     });
 });

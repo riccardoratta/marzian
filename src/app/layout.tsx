@@ -1,16 +1,23 @@
 import "@mantine/core/styles.css";
+
 import "@mantine/notifications/styles.css";
+
 import "@/app/globals.css";
 
 import { cookies } from "next/headers";
-import { ColorSchemeScript, type MantineColorScheme } from "@mantine/core";
+
+import {
+  ColorSchemeScript,
+  mantineHtmlProps,
+  type MantineColorScheme,
+} from "@mantine/core";
 
 import Providers from "@/app/providers";
 import { NAME, DEFAULT_COLOR_SCHEME, DEFAULT_THEME_ID } from "@/constants/app";
 import { COLOR_SCHEME, THEME_ID } from "@/constants/cookies";
 
 import type { ReactNode } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 export interface RootLayoutProps {
   children: ReactNode;
@@ -20,45 +27,33 @@ export const metadata: Metadata = {
   title: { template: `%s | ${NAME}`, default: NAME },
 };
 
-export default function RootLayout({ children }: RootLayoutProps) {
-  const cookieStore = cookies();
+export const viewport: Viewport = {
+  width: "device-width",
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
-  // Color scheme
-  let initialColorScheme: MantineColorScheme = DEFAULT_COLOR_SCHEME;
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const cookieStore = await cookies();
 
-  const cachedColorScheme = cookieStore.get(COLOR_SCHEME)?.value as
-    | MantineColorScheme
-    | undefined;
-
-  if (cachedColorScheme) {
-    initialColorScheme = cachedColorScheme;
-  }
-
-  // Theme
-  let initialThemeId: string = DEFAULT_THEME_ID;
-
-  const cachedThemeId = cookieStore.get(THEME_ID)?.value;
-
-  if (cachedThemeId) {
-    initialThemeId = cachedThemeId;
-  }
+  const colorScheme: MantineColorScheme =
+    (cookieStore.get(COLOR_SCHEME)?.value as MantineColorScheme | undefined) ??
+    DEFAULT_COLOR_SCHEME;
 
   return (
-    <html lang="en">
+    <html lang="en" {...mantineHtmlProps}>
       <head>
         <meta charSet="utf-8" />
-
-        <meta
-          name="viewport"
-          content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no"
-        />
-
-        <ColorSchemeScript defaultColorScheme={initialColorScheme} />
+        <ColorSchemeScript defaultColorScheme={colorScheme} />
       </head>
 
       <body>
         <Providers
-          cookies={{ colorScheme: initialColorScheme, themeId: initialThemeId }}
+          cookies={{
+            colorScheme,
+            themeId: cookieStore.get(THEME_ID)?.value ?? DEFAULT_THEME_ID,
+          }}
         >
           {children}
         </Providers>

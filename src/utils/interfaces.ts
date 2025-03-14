@@ -23,7 +23,7 @@ export interface Session {
   pid?: number;
 }
 
-export const sessionNameSchema = z.string().regex(/^[a-zA-Z0-9\-\_]+$/, {
+export const sessionNameSchema = z.string().regex(/^[a-zA-Z0-9\-_]+$/, {
   message: "Only letters, numbers, and dashes are allowed.",
 });
 
@@ -40,7 +40,6 @@ export interface SocketServerToClientEvents {
   data: (data: string) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SocketClientToServerEvents {
   write: (data: string) => void;
 }

@@ -5,11 +5,11 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export function GET(
+export async function GET(
   _: NextRequest,
-  { params }: { params: { name: string } }
-): NextResponse<SessionResponse | Details> {
-  const { name } = params;
+  { params }: { params: Promise<{ name: string }> }
+): Promise<NextResponse<SessionResponse | Details>> {
+  const { name } = await params;
 
   const session = getSessionWithCommand(name);
 
@@ -20,11 +20,11 @@ export function GET(
   return notFound();
 }
 
-export function DELETE(
+export async function DELETE(
   _: NextRequest,
-  { params }: { params: { name: string } }
-): NextResponse<SpawnError | Details> {
-  const { name } = params;
+  { params }: { params: Promise<{ name: string }> }
+): Promise<NextResponse<SpawnError | Details>> {
+  const { name } = await params;
 
   try {
     deleteSession(name);

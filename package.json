@@ -13,7 +13,7 @@
     "dev": "nodemon",
     "build": "next build",
     "start": "cross-env NODE_ENV=production ./src/server.ts",
-    "lint": "next lint"
+    "lint": "next lint --no-cache"
   },
   "bin": {
     "marzian": "marzian"

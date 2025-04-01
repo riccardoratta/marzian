@@ -13,10 +13,10 @@ else
   . "$NVM_DIR/nvm.sh"
   . "$HOME/.nvm/nvm.sh"
     # node.js is not installed, but nvm yes
-    nvm install 18
+    nvm install 24
   else
     # node.js is not installed, neither nvm
-    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
     echo "Please close the console and launch again this script!"
     exit 0
   fi
@@ -24,8 +24,8 @@ fi
 
 node_version=$(node --version)
 
-if ! [[ "$node_version" == v18.* ]]; then
-    echo "Warning! You are not using node.js version 18, this application is not guaranteed to work."
+if ! [[ "$node_version" == v24.* ]]; then
+    echo "Warning! You are not using node.js version 24, this application is not guaranteed to work."
 fi
 
 npm install -g cross-env

@@ -132,6 +132,7 @@ export default function AddSessionPage() {
               withBorder
               mt="md"
               p="md"
+              shadow="sm"
               style={{
                 backgroundColor:
                   colorScheme === "light"

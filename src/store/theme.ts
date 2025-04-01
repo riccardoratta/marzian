@@ -8,6 +8,7 @@ import {
   type MantineTheme,
   type MantineThemeOverride,
   type CSSVariablesResolver,
+  Card,
 } from "@mantine/core";
 
 import { THEME_ID } from "@/constants/cookies";
@@ -60,6 +61,14 @@ const BASE_THEME: ThemeState["theme"]["data"] = mergeMantineTheme(
         "#141517",
         "#101113",
       ],
+    },
+
+    components: {
+      Card: Card.extend({
+        defaultProps: {
+          shadow: "md",
+        },
+      }),
     },
   })
 );

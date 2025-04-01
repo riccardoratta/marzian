@@ -1,4 +1,4 @@
-import { deleteSession, getSessionWithCommand, TmuxError } from "@/lib/data";
+import { deleteSession, getSessionWithCommand, TmuxError } from "@/lib/session";
 import { Details, SessionResponse, SpawnError } from "@/utils/interfaces";
 import { internalServerError, notFound } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";

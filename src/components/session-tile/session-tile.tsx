@@ -1,6 +1,6 @@
 "use client";
 
-import { type Session } from "@/lib/data";
+import { type Session } from "@/lib/session";
 import {
   Flex,
   Group,

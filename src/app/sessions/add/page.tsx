@@ -25,15 +25,17 @@ import {
   IconPlayerPlay,
 } from "@tabler/icons-react";
 import { isAxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 
 export default function AddSessionPage() {
+  const searchParams = useSearchParams();
+
   const form = useForm({
     initialValues: {
-      name: "",
-      command: "",
+      name: searchParams.get("name") ?? "",
+      command: searchParams.get("command") ?? "",
       postCommand: process.env.NEXT_PUBLIC_DEFAULT_POST_COMMAND,
     },
     validate: {

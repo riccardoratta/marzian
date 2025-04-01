@@ -1,4 +1,4 @@
-import { captureSession, TmuxError } from "@/lib/data";
+import { captureSession, TmuxError } from "@/lib/session";
 import { Details } from "@/utils/interfaces";
 import { internalServerError, notFound } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";

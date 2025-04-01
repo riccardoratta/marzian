@@ -43,3 +43,14 @@ export interface SocketServerToClientEvents {
 export interface SocketClientToServerEvents {
   write: (data: string) => void;
 }
+
+export interface Session {
+  name: string;
+  createdAt: number | null;
+  pid?: number;
+}
+
+export interface SessionSkeleton {
+  name: string;
+  command: string;
+}

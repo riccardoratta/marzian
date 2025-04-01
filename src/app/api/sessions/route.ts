@@ -1,4 +1,4 @@
-import { createSession, getSessions, TmuxError } from "@/lib/data";
+import { createSession, getSessions, TmuxError } from "@/lib/session";
 import {
   Details,
   SessionCreateRequest,

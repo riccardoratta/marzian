@@ -1,4 +1,4 @@
-import { restartSession } from "@/lib/data";
+import { restartSession } from "@/lib/session";
 import { Details } from "@/utils/interfaces";
 import { type NextRequest, NextResponse } from "next/server";
 

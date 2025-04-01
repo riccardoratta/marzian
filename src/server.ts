@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { setupSocketHandler } from "./lib/socket";
+import { setupSocketHandler } from "@/lib/socket";
 import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";

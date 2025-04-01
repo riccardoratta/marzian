@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from "child_process";
-import { getMarzianDir, getPIDbyName, stayOpenScript } from "../lib/shell";
+import { getMarzianDir, getPIDbyName, stayOpenScript } from "@/lib/shell";
 import {
   writeFileSync,
   rmSync,
@@ -8,14 +8,9 @@ import {
   readdirSync,
 } from "fs";
 import path from "path";
+import { Session, SessionSkeleton } from "@/utils/interfaces";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
-
-export interface Session {
-  name: string;
-  createdAt: number | null;
-  pid?: number;
-}
 
 export const getSessions = (): Session[] => {
   const spawnRes = spawnSync("tmux ls", { shell: true });
@@ -255,3 +250,23 @@ export class TmuxError extends Error {
     }
   }
 }
+
+/**
+ * Given a session name return its launch command saved on the marzian dir.
+ */
+const getSessionCommand = (name: string) => {
+  return readFileSync(path.join(getMarzianDir(), name))
+    .toString()
+    .split("\n")[0];
+};
+
+export const getTerminatedSessions = (): SessionSkeleton[] => {
+  const activeSessions = getSessions().map((session) => session.name);
+
+  return readdirSync(getMarzianDir())
+    .filter((session) => !activeSessions.includes(session))
+    .map((session) => ({
+      name: session,
+      command: getSessionCommand(session),
+    }));
+};

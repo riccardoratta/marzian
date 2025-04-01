@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { getSession } from "../lib/data";
+import { getSession } from "@/lib/session";
 import { spawn } from "node-pty";
 import {
   SocketClientToServerEvents,

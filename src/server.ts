@@ -5,6 +5,7 @@ import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";
 import { Option, program } from "commander";
+import { parse } from "url";
 
 program
   .option("--path <path>", "project path")
@@ -34,7 +35,9 @@ const app = next({
 const handler = app.getRequestHandler();
 
 void app.prepare().then(() => {
-  const httpServer = createServer(void handler);
+  const httpServer = createServer((req, res) => {
+    if (req.url) void handler(req, res, parse(req.url, true));
+  });
 
   const io = new Server(httpServer);
 

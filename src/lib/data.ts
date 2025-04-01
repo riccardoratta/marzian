@@ -104,7 +104,15 @@ export const createSession = (name: string, command?: string) => {
 
   const spawnRes = spawn(
     "tmux",
-    ["new-session", "-d", "-s", name, scriptPath],
+    [
+      "new-session",
+      "-d",
+      "-s",
+      name,
+      "-c",
+      process.env.WORKING_DIR,
+      scriptPath,
+    ],
     {
       shell: true,
     }

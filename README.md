@@ -55,23 +55,23 @@ Defaults to `3000`.
 
 The installation script is designed to be "battery-included." If Node.js is not
 installed on the system, it will be installed using [nvm](https://github.com/nvm-sh/nvm)
-(v18). Additionally, the script ensures that Marzian is enabled globally.
+(v22). Additionally, the script ensures that Marzian is enabled globally.
 
 ### Run (production)
 
 From anywhere in the system:
 
 ```shell
-marzian
+npx marzian
 ```
 
-Set a custom port by running:
+<!-- Set a custom port by running:
 
 ```shell
 marzian --port 4000
-```
+``` -->
 
-Defaults to `8080`.
+Defaults to port `8080`.
 
 ## 4. Variables
 

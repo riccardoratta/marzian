@@ -7,13 +7,13 @@ import { Server } from "socket.io";
 import { Option, program } from "commander";
 import { parse } from "url";
 
-program
-  .option("--path <path>", "project path")
-  .addOption(new Option("--port <number>", "port number").default(undefined));
+program.addOption(
+  new Option("--port <number>", "port number").default(undefined)
+);
 
 // Parse the command line arguments
 program.parse();
-const options: { path: string; port?: number } = program.opts();
+const options: { port?: number } = program.opts();
 
 const dev = process.env.NODE_ENV !== "production";
 
@@ -27,11 +27,11 @@ if (!options.port) {
 
 const app = next({
   customServer: true,
-  dir: options.path,
   dev,
   hostname: "localhost",
   port: options.port,
 });
+
 const handler = app.getRequestHandler();
 
 void app.prepare().then(() => {

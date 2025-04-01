@@ -102,6 +102,10 @@ export const createSession = (name: string, command?: string) => {
     }
   }
 
+  if (!process.env.WORKING_DIR) {
+    throw Error("Env variable WORKING_DIR not set.");
+  }
+
   const spawnRes = spawn(
     "tmux",
     [

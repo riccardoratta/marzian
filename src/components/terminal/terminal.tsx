@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
 import { Card } from "@mantine/core";
 import { Terminal } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
 
 export interface TerminalMethods {
   writeln: (value: string) => void;
@@ -15,22 +16,18 @@ const TerminalComponent = forwardRef<
 >(function TerminalComponent(props, ref) {
   const terminalContainerRef = useRef<HTMLDivElement>(null);
 
-  const terminalRef = useRef(
-    new Terminal({
-      cols: 95,
-      rows: 30,
-    })
-  );
+  const terminalRef = useRef(new Terminal());
+  const fitAddonRef = useRef(new FitAddon());
 
   useEffect(() => {
     const currentRef = terminalRef.current;
     // Attach terminalRef to its container
     if (terminalContainerRef.current) {
+      currentRef.loadAddon(fitAddonRef.current); // Attach fit addon
       currentRef.open(terminalContainerRef.current);
     }
-    // Set resize
-    currentRef.resize(95, 30);
-  }, [terminalRef, terminalContainerRef]);
+    fitAddonRef.current.fit();
+  }, [terminalRef, fitAddonRef, terminalContainerRef]);
 
   useEffect(() => {
     // Attach onData callback

@@ -25,6 +25,7 @@
     "@mantine/hooks": "^7.17.2",
     "@mantine/notifications": "^7.17.2",
     "@tabler/icons-react": "3.31.0",
+    "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "axios": "^1.8.3",
     "commander": "^12.1.0",

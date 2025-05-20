@@ -49,11 +49,12 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.2.2",
-    "nodemon": "^3.1.9",
+    "nodemon": "^3.1.10",
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.19.4",
     "typescript": "^5",
     "typescript-eslint": "^8.26.1"
   }

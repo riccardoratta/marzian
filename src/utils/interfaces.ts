@@ -54,3 +54,7 @@ export interface SessionSkeleton {
   name: string;
   command: string;
 }
+
+export interface SavedSessionsResponse {
+  sessions: (SessionSkeleton & { active: boolean })[];
+}

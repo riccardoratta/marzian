@@ -260,13 +260,17 @@ const getSessionCommand = (name: string) => {
     .split("\n")[0];
 };
 
-export const getTerminatedSessions = (): SessionSkeleton[] => {
+/**
+ * Get all session currenty saved on disk in the marzian directory.
+ */
+export const getSavedSessions = (): (SessionSkeleton & {
+  active: boolean;
+})[] => {
   const activeSessions = getSessions().map((session) => session.name);
 
-  return readdirSync(getMarzianDir())
-    .filter((session) => !activeSessions.includes(session))
-    .map((session) => ({
-      name: session,
-      command: getSessionCommand(session),
-    }));
+  return readdirSync(getMarzianDir()).map((session) => ({
+    name: session,
+    command: getSessionCommand(session),
+    active: activeSessions.includes(session),
+  }));
 };

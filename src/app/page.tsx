@@ -48,8 +48,7 @@ export default function HomePage() {
             variant="light"
             aria-label="Restart"
             component="a"
-            href="sessions/add"
-            // onClick={() => void restartSession()}
+            href="sessions/add-helper"
             leftSection={<IconPlus size={14} stroke={1.5} />}
           >
             Add session
@@ -67,7 +66,7 @@ export default function HomePage() {
             <Text ml="lg" my="md" c="dimmed">
               Nothing is started yet?&nbsp;
             </Text>
-            <Anchor href="sessions/add">Start a new session.</Anchor>
+            <Anchor href="sessions/add-helper">Start a new session.</Anchor>
           </Flex>
         )}
       </Card>

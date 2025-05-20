@@ -28,6 +28,7 @@ import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import classes from "@/app/page.module.css";
+import { useAxiosMutation } from "@caplit/axios-query";
 
 export default function SessionClient({ name }: { name: string }) {
   const terminalRef = useRef<TerminalMethods>(null);
@@ -74,23 +75,15 @@ export default function SessionClient({ name }: { name: string }) {
 
   const router = useRouter();
 
-  const deleteSession = async () => {
-    try {
-      await api.delete(`/api/sessions/${name}`);
-      router.replace("/");
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const deleteSession = useAxiosMutation({
+    client: api,
+    axios: { method: "delete", url: `sessions/${name}` },
+  });
 
-  const restartSession = async () => {
-    try {
-      await api.post(`/api/sessions/${name}/restart`);
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const restartSession = useAxiosMutation({
+    client: api,
+    axios: { method: "post", url: `sessions/${name}/restart` },
+  });
 
   return (
     <Container py="xl" px={0}>
@@ -125,7 +118,11 @@ export default function SessionClient({ name }: { name: string }) {
               size="xs"
               variant="light"
               aria-label="Restart"
-              onClick={() => void restartSession()}
+              onClick={() =>
+                void restartSession.mutateAsync(null).then(() => {
+                  window.location.reload();
+                })
+              }
               leftSection={<IconRepeat size={14} stroke={1.5} />}
             >
               Restart
@@ -148,7 +145,11 @@ export default function SessionClient({ name }: { name: string }) {
               variant="light"
               color="red"
               aria-label="Settings"
-              onClick={() => void deleteSession()}
+              onClick={() =>
+                void deleteSession.mutateAsync(null).then(() => {
+                  router.replace("/");
+                })
+              }
               className={classes.toolbarbutton}
             >
               <IconTrash className={classes.toolbarbuttonicon} stroke={1.5} />

@@ -27,7 +27,7 @@ export default function HomePage() {
   const { isLoading, data } = useAxiosQuery<SessionsResponse>({
     client: api,
     reactQuery: { queryKey: ["sessions"] },
-    axios: { url: "/api/sessions" },
+    axios: { url: "sessions" },
   });
 
   return (

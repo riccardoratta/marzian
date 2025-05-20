@@ -1,7 +1,12 @@
 "use client";
 
 import { api } from "@/utils/http";
-import { SessionCreateRequest, sessionNameSchema } from "@/utils/interfaces";
+import {
+  SessionCreateRequest,
+  SessionCreateResponse,
+  sessionNameSchema,
+} from "@/utils/interfaces";
+import { useAxiosMutation } from "@caplit/axios-query";
 import {
   Button,
   Card,
@@ -55,36 +60,13 @@ export default function AddSessionPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const addSession = async (data: z.infer<typeof SessionCreateRequest>) => {
-    setLoading(true);
-    try {
-      try {
-        await api.post("/api/sessions", data);
-        router.replace(`/sessions/${data.name}`);
-      } catch (err) {
-        if (isAxiosError(err)) {
-          if (err.response && "details" in err.response.data) {
-            setLoading(false);
-            return notifications.show({
-              title: "Error",
-              message: (err.response.data as { details: string }).details,
-              color: "red",
-            });
-          }
-        }
-
-        notifications.show({
-          title: "Error",
-          message: "A generic error occurred, retry layer.",
-          color: "red",
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const addSession = useAxiosMutation<
+    SessionCreateResponse,
+    z.infer<typeof SessionCreateRequest>
+  >({
+    client: api,
+    axios: { method: "post", url: "sessions" },
+  });
 
   return (
     <Container py="xl" px={0}>
@@ -93,9 +75,11 @@ export default function AddSessionPage() {
       </Center>
       <Card withBorder>
         <form
-          onSubmit={form.onSubmit(
-            (values) =>
-              void addSession({
+          onSubmit={form.onSubmit((values) => {
+            setLoading(true);
+
+            addSession
+              .mutateAsync({
                 name: values.name,
                 // Append post command if present (and replace $name)
                 command: `${values.command}${
@@ -104,7 +88,31 @@ export default function AddSessionPage() {
                     : ""
                 }`,
               })
-          )}
+              .then((response) => {
+                router.replace(`/sessions/${response.data.name}`);
+              })
+              .catch((err: unknown) => {
+                setLoading(false);
+
+                if (isAxiosError(err)) {
+                  if (err.response && "details" in err.response.data) {
+                    setLoading(false);
+                    return notifications.show({
+                      title: "Error",
+                      message: (err.response.data as { details: string })
+                        .details,
+                      color: "red",
+                    });
+                  }
+                }
+
+                notifications.show({
+                  title: "Error",
+                  message: "A generic error occurred, retry layer.",
+                  color: "red",
+                });
+              });
+          })}
         >
           <TextInput
             label="Name"

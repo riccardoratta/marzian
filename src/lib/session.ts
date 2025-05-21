@@ -74,6 +74,10 @@ const EXEC_PERMISSION = {
 export const createSession = (name: string, command?: string) => {
   console.log(`Creating new tmux session with name ${name}`);
 
+  if (getSession(name)) {
+    throw new TmuxError("There is another session with the same name.");
+  }
+
   const scriptPath = getScriptPath(name);
 
   let prevScriptPath = null;

@@ -8,7 +8,7 @@ import {
   readdirSync,
 } from "fs";
 import path from "path";
-import { Session, SessionSkeleton } from "@/utils/interfaces";
+import { SavedSession, Session } from "@/utils/interfaces";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
 
@@ -263,14 +263,18 @@ const getSessionCommand = (name: string) => {
 /**
  * Get all session currenty saved on disk in the marzian directory.
  */
-export const getSavedSessions = (): (SessionSkeleton & {
-  active: boolean;
-})[] => {
-  const activeSessions = getSessions().map((session) => session.name);
+export const getSavedSessions = (): SavedSession[] => {
+  const activeSessions = getSessions();
 
-  return readdirSync(getMarzianDir()).map((session) => ({
-    name: session,
-    command: getSessionCommand(session),
-    active: activeSessions.includes(session),
-  }));
+  return readdirSync(getMarzianDir()).map((sessionName) => {
+    const activeSession = activeSessions.find(
+      (session) => session.name === sessionName
+    );
+
+    return {
+      name: sessionName,
+      command: getSessionCommand(sessionName),
+      ...activeSession,
+    };
+  });
 };

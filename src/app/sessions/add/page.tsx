@@ -32,7 +32,6 @@ import {
 import { isAxiosError } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { z } from "zod";
 
 export default function AddSessionPage() {
   const searchParams = useSearchParams();
@@ -62,7 +61,7 @@ export default function AddSessionPage() {
 
   const addSession = useAxiosMutation<
     SessionCreateResponse,
-    z.infer<typeof SessionCreateRequest>
+    SessionCreateRequest
   >({
     client: api,
     axios: { method: "post", url: "sessions" },
@@ -80,13 +79,18 @@ export default function AddSessionPage() {
 
             addSession
               .mutateAsync({
-                name: values.name,
-                // Append post command if present (and replace $name)
-                command: `${values.command}${
-                  values.postCommand
-                    ? `\n${values.postCommand.replaceAll("$name", values.name)}`
-                    : ""
-                }`,
+                session: {
+                  name: values.name,
+                  // Append post command if present (and replace $name)
+                  command: `${values.command}${
+                    values.postCommand
+                      ? `\n${values.postCommand.replaceAll(
+                          "$name",
+                          values.name
+                        )}`
+                      : ""
+                  }`,
+                },
               })
               .then((response) => {
                 router.replace(`/sessions/${response.data.name}`);
@@ -142,7 +146,7 @@ export default function AddSessionPage() {
               withBorder
               mt="md"
               p="md"
-              shadow="sm"
+              shadow="none"
               style={{
                 backgroundColor:
                   colorScheme === "light"

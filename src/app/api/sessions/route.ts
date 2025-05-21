@@ -1,9 +1,9 @@
 import { createSession, getSessions, TmuxError } from "@/lib/session";
 import {
-  Details,
-  SessionCreateRequest,
-  SessionCreateResponse,
-  SessionsResponse,
+  sessionCreateSchema,
+  type Details,
+  type SessionCreateResponse,
+  type SessionsResponse,
 } from "@/utils/interfaces";
 import { badRequest, internalServerError } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";
@@ -19,7 +19,7 @@ export function GET(): NextResponse<SessionsResponse> {
 export async function POST(
   request: NextRequest
 ): Promise<NextResponse<SessionCreateResponse | Details>> {
-  const { name, command } = SessionCreateRequest.parse(await request.json());
+  const { name, command } = sessionCreateSchema.parse(await request.json());
 
   try {
     await createSession(name, command);

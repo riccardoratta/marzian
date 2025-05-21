@@ -13,7 +13,7 @@ import classes from "@/app/page.module.css";
 import { formatDistance } from "date-fns";
 import { IconCircle } from "@tabler/icons-react";
 
-export default function SessionTile({ session }: { session: Session }) {
+export function SessionTile({ session }: { session: Session }) {
   const isActive = session.pid !== undefined;
 
   const theme = useMantineTheme();
@@ -23,7 +23,7 @@ export default function SessionTile({ session }: { session: Session }) {
       p="md"
       className={classes.clickable}
       component="a"
-      href={`sessions/${session.name}`}
+      href={`/sessions/${session.name}`}
     >
       <Flex>
         <Group flex="1">

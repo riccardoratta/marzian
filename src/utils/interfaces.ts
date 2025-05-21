@@ -19,7 +19,7 @@ export interface SessionsResponse {
 
 export interface Session {
   name: string;
-  createdAt: number | null;
+  createdAt?: number;
   pid?: number;
 }
 
@@ -27,10 +27,16 @@ export const sessionNameSchema = z.string().regex(/^[a-zA-Z0-9\-_]+$/, {
   message: "Only letters, numbers, and dashes are allowed.",
 });
 
-export const SessionCreateRequest = z.object({
+export const sessionCreateSchema = z.object({
   name: sessionNameSchema,
   command: z.string(),
 });
+
+type SessionCreate = z.infer<typeof sessionCreateSchema>;
+
+export interface SessionCreateRequest {
+  session: SessionCreate;
+}
 
 export interface SessionCreateResponse {
   name: string;
@@ -44,17 +50,8 @@ export interface SocketClientToServerEvents {
   write: (data: string) => void;
 }
 
-export interface Session {
-  name: string;
-  createdAt: number | null;
-  pid?: number;
-}
-
-export interface SessionSkeleton {
-  name: string;
-  command: string;
-}
+export type SavedSession = Session & SessionCreate;
 
 export interface SavedSessionsResponse {
-  sessions: (SessionSkeleton & { active: boolean })[];
+  sessions: SavedSession[];
 }

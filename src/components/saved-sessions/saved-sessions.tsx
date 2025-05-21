@@ -47,7 +47,15 @@ export function SavedSessions() {
               return true;
             }
 
-            return session.name.toLowerCase().includes(search.toLowerCase());
+            const name = session.name.toLowerCase();
+
+            for (const searchTerm of search.toLowerCase().split(" ")) {
+              if (name.includes(searchTerm)) {
+                return true;
+              }
+            }
+
+            return false;
           })
           .map((session) => (
             <SavedSessionTile

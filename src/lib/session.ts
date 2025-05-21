@@ -237,7 +237,7 @@ export const restartSession = (name: string) => {
 };
 
 export const captureSession = (name: string) => {
-  const spawnRes = spawnSync(`tmux capture-pane -Jp -t ${name}`, {
+  const spawnRes = spawnSync(`tmux capture-pane -Jp -S - -E - -t ${name}`, {
     shell: true,
   });
 
@@ -249,7 +249,7 @@ export const captureSession = (name: string) => {
 
     // General error
     throw new TmuxError(undefined, {
-      spawnArgs: `tmux capture-pane -p -t ${name}`.split(" "),
+      spawnArgs: `tmux capture-pane -Jp -S - -E - -t ${name}`.split(" "),
       exitCode: spawnRes.status,
       stdout: spawnRes.stdout.toString(),
       stderr: spawnRes.stderr.toString(),

@@ -1,0 +1,10 @@
+.toolbarbutton {
+    width: 30px;
+    height: 30px;
+    box-shadow: none !important;
+
+    .toolbarbuttonicon {
+        width: 70%;
+        height: 70%;
+    }
+}

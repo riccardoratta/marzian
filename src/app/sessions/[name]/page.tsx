@@ -27,8 +27,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
-import classes from "@/app/page.module.css";
 import { useAxiosMutation } from "@caplit/axios-query";
+import styles from "./page.module.css";
 
 export default function SessionPage() {
   const { name } = useParams<{ name: string }>();
@@ -101,16 +101,16 @@ export default function SessionPage() {
                   toggleEditable();
                 }}
                 color={!editable ? "gray" : undefined}
-                className={classes.toolbarbutton}
+                className={styles.toolbarbutton}
               >
                 {editable ? (
                   <IconKeyboard
-                    className={classes.toolbarbuttonicon}
+                    className={styles.toolbarbuttonicon}
                     stroke={1.5}
                   />
                 ) : (
                   <IconKeyboardOff
-                    className={classes.toolbarbuttonicon}
+                    className={styles.toolbarbuttonicon}
                     stroke={1.5}
                   />
                 )}
@@ -133,14 +133,11 @@ export default function SessionPage() {
               size="md"
               variant="default"
               aria-label="Download session"
-              className={classes.toolbarbutton}
+              className={styles.toolbarbutton}
               component="a"
               href={`/api/sessions/${name}/download`}
             >
-              <IconDownload
-                className={classes.toolbarbuttonicon}
-                stroke={1.5}
-              />
+              <IconDownload className={styles.toolbarbuttonicon} stroke={1.5} />
             </ActionIcon>
             <ActionIcon
               size="md"
@@ -152,9 +149,9 @@ export default function SessionPage() {
                   router.replace("/");
                 })
               }
-              className={classes.toolbarbutton}
+              className={styles.toolbarbutton}
             >
-              <IconTrash className={classes.toolbarbuttonicon} stroke={1.5} />
+              <IconTrash className={styles.toolbarbuttonicon} stroke={1.5} />
             </ActionIcon>
           </Group>
         </Group>

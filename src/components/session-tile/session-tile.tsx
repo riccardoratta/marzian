@@ -9,9 +9,9 @@ import {
   Text,
 } from "@mantine/core";
 
-import classes from "@/app/page.module.css";
 import { formatDistance } from "date-fns";
 import { IconCircle } from "@tabler/icons-react";
+import styles from "./session-tile.module.css";
 
 export function SessionTile({ session }: { session: Session }) {
   const isActive = session.pid !== undefined;
@@ -21,7 +21,7 @@ export function SessionTile({ session }: { session: Session }) {
   return (
     <UnstyledButton
       p="md"
-      className={classes.clickable}
+      className={styles.clickable}
       component="a"
       href={`/sessions/${session.name}`}
     >

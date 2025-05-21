@@ -32,6 +32,7 @@ import {
 import { isAxiosError } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import styles from "./page.module.css";
 
 export default function AddSessionPage() {
   const searchParams = useSearchParams();
@@ -133,13 +134,7 @@ export default function AddSessionPage() {
             autosize
             minRows={1}
             {...form.getInputProps("command")}
-            styles={{
-              input: {
-                fontFamily: "monospace",
-                fontSize: 12,
-                paddingTop: 8,
-              },
-            }}
+            classNames={{ input: styles.script }}
           />
           <Collapse in={openedAdditionalSettings} pt="1px">
             <Paper
@@ -163,13 +158,7 @@ export default function AddSessionPage() {
                 autosize
                 minRows={1}
                 {...form.getInputProps("postCommand")}
-                styles={{
-                  input: {
-                    fontFamily: "monospace",
-                    fontSize: 12,
-                    paddingTop: 8,
-                  },
-                }}
+                classNames={{ input: styles.script }}
               />
             </Paper>
           </Collapse>

@@ -1,6 +1,5 @@
 "use client";
 
-import classes from "@/app/page.module.css";
 import { api } from "@/utils/http";
 import { SavedSession, SavedSessionsResponse } from "@/utils/interfaces";
 import { useAxiosQuery } from "@caplit/axios-query";
@@ -8,6 +7,7 @@ import { Center, Divider, NavLink, Text, TextInput } from "@mantine/core";
 import { IconChevronRight, IconPlus, IconSearch } from "@tabler/icons-react";
 import { ListSkeleton } from "@/components/list-skeleton";
 import { useState } from "react";
+import styles from "./saved-sessions.module.css";
 
 export function SavedSessions() {
   const { isLoading, data } = useAxiosQuery<SavedSessionsResponse>({
@@ -27,7 +27,7 @@ export function SavedSessions() {
         radius={0}
         aria-label="Search saved sessions"
         size="md"
-        classNames={{ input: classes.inputWithoutOutline }}
+        classNames={{ input: styles["without-outline"] }}
         onChange={(e) => {
           setSearch(e.target.value.toLowerCase());
         }}

@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from "child_process";
-import { getMarzianDir, getPIDbyName, stayOpenScript } from "@/lib/shell";
+import { getMarzianDir, getPIDbyName } from "@/lib/shell";
 import {
   writeFileSync,
   rmSync,
@@ -7,8 +7,8 @@ import {
   readFileSync,
   readdirSync,
 } from "fs";
-import path from "path";
 import { SavedSession, Session } from "@/utils/interfaces";
+import { getPostScriptPath, getPrevScriptPath, getScriptPath } from "./file";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
 
@@ -26,7 +26,9 @@ export const getSessions = (): Session[] => {
 
   const sessions: Session[] = [];
 
-  const sessionsInMarzianDir = readdirSync(getMarzianDir());
+  const sessionsInMarzianDir = getSavedSessions().map(
+    (session) => session.name
+  );
 
   for (const line of lsOutput.split("\n")) {
     if (line.length !== 0) {
@@ -58,19 +60,8 @@ export const getSession = (name: string): Session | undefined => {
   }
 };
 
-export const getSessionWithCommand = (
-  name: string
-): (Session & { command: string }) | undefined => {
-  for (const session of getSessions()) {
-    if (session.name === name) {
-      return {
-        ...session,
-        command: readFileSync(path.join(getMarzianDir(), name))
-          .toString()
-          .replace(`\n${stayOpenScript}`, ""),
-      };
-    }
-  }
+const EXEC_PERMISSION = {
+  mode: 0o755,
 };
 
 /**
@@ -83,17 +74,50 @@ export const getSessionWithCommand = (
 export const createSession = (name: string, command?: string) => {
   console.log(`Creating new tmux session with name ${name}`);
 
-  const scriptPath = path.join(getMarzianDir(), name);
+  const scriptPath = getScriptPath(name);
+
+  let prevScriptPath = null;
+  let postScriptPath = null;
+
+  if (process.env.PREV_COMMAND) {
+    prevScriptPath = getPrevScriptPath(name);
+
+    writeFileSync(
+      prevScriptPath,
+      process.env.PREV_COMMAND.replaceAll("$name", name) + "\n",
+      EXEC_PERMISSION
+    );
+
+    if (!existsSync(prevScriptPath)) {
+      throw new Error(`Unable to write "${prevScriptPath}".`);
+    }
+  }
+
+  if (process.env.POST_COMMAND) {
+    postScriptPath = getPostScriptPath(name);
+
+    writeFileSync(
+      postScriptPath,
+      process.env.POST_COMMAND.replaceAll("$name", name) + "\n",
+      EXEC_PERMISSION
+    );
+
+    if (!existsSync(postScriptPath)) {
+      throw new Error(`Unable to write "${postScriptPath}".`);
+    }
+  }
 
   if (command) {
-    writeFileSync(scriptPath, `${command};\n${stayOpenScript}`, {
-      mode: 0o755,
-    });
+    writeFileSync(
+      scriptPath,
+      (prevScriptPath ? `source ${prevScriptPath}\n` : "") +
+        command +
+        (postScriptPath ? `\nsource ${postScriptPath}\n` : ""),
+      EXEC_PERMISSION
+    );
   } else {
-    // If scriptPath doesn't exists
     if (!existsSync(scriptPath)) {
-      // Throw an error
-      throw new Error(`File scriptPath "${scriptPath}" doesn't exist.`);
+      throw new Error(`Unable to write "${scriptPath}".`);
     }
   }
 
@@ -178,14 +202,25 @@ const killSession = (name: string) => {
 };
 
 /**
- * Delete a session from the file system and kill it from tmux (using
- * `killSession`).
+ * Delete a session from the file system (and its prev and post scripts) and
+ * kill it from tmux (using `killSession`).
  * @param name - The name of the session to delete.
  */
 export const deleteSession = (name: string) => {
-  const scriptPath = path.join(getMarzianDir(), name);
+  const scriptPath = getScriptPath(name);
   if (existsSync(scriptPath)) {
     rmSync(scriptPath);
+  }
+
+  const prevScriptPath = getPrevScriptPath(name);
+  const postScriptPath = getPostScriptPath(name);
+
+  if (existsSync(prevScriptPath)) {
+    rmSync(prevScriptPath);
+  }
+
+  if (existsSync(postScriptPath)) {
+    rmSync(postScriptPath);
   }
 
   killSession(name);
@@ -254,27 +289,26 @@ export class TmuxError extends Error {
 /**
  * Given a session name return its launch command saved on the marzian dir.
  */
-const getSessionCommand = (name: string) => {
-  return readFileSync(path.join(getMarzianDir(), name))
+export const getSessionCommand = (name: string) => {
+  return readFileSync(getScriptPath(name))
     .toString()
-    .split("\n")[0];
+    .replace(RegExp(`source .+.prev\n`), "")
+    .replace(RegExp(`\nsource .+.post\n`), "");
 };
 
 /**
  * Get all session currenty saved on disk in the marzian directory.
  */
 export const getSavedSessions = (): SavedSession[] => {
-  const activeSessions = getSessions();
-
-  return readdirSync(getMarzianDir()).map((sessionName) => {
-    const activeSession = activeSessions.find(
-      (session) => session.name === sessionName
-    );
-
-    return {
-      name: sessionName,
-      command: getSessionCommand(sessionName),
-      ...activeSession,
-    };
-  });
+  return readdirSync(getMarzianDir())
+    .filter(
+      (sessionName) =>
+        !sessionName.endsWith(".prev") && !sessionName.endsWith(".post")
+    )
+    .map((sessionName) => {
+      return {
+        name: sessionName,
+        command: getSessionCommand(sessionName),
+      };
+    });
 };

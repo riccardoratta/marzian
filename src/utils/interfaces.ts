@@ -34,9 +34,11 @@ export const sessionCreateSchema = z.object({
 
 type SessionCreate = z.infer<typeof sessionCreateSchema>;
 
-export interface SessionCreateRequest {
-  session: SessionCreate;
-}
+export const sessionCreateRequestSchema = z.object({
+  session: sessionCreateSchema,
+});
+
+export type SessionCreateRequest = z.infer<typeof sessionCreateRequestSchema>;
 
 export interface SessionCreateResponse {
   name: string;
@@ -50,7 +52,7 @@ export interface SocketClientToServerEvents {
   write: (data: string) => void;
 }
 
-export type SavedSession = Session & SessionCreate;
+export type SavedSession = SessionCreate;
 
 export interface SavedSessionsResponse {
   sessions: SavedSession[];

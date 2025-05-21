@@ -4,7 +4,12 @@ import { api } from "@/utils/http";
 import { SavedSession, SavedSessionsResponse } from "@/utils/interfaces";
 import { useAxiosQuery } from "@caplit/axios-query";
 import { Center, Divider, NavLink, Text, TextInput } from "@mantine/core";
-import { IconChevronRight, IconPlus, IconSearch } from "@tabler/icons-react";
+import {
+  IconChevronRight,
+  IconPlus,
+  IconProgressHelp,
+  IconSearch,
+} from "@tabler/icons-react";
 import { ListSkeleton } from "@/components/list-skeleton";
 import { useState } from "react";
 import styles from "./saved-sessions.module.css";
@@ -29,7 +34,7 @@ export function SavedSessions() {
         size="md"
         classNames={{ input: styles["without-outline"] }}
         onChange={(e) => {
-          setSearch(e.target.value.toLowerCase());
+          setSearch(e.target.value);
         }}
       />
 
@@ -42,7 +47,7 @@ export function SavedSessions() {
               return true;
             }
 
-            return session.name.toLowerCase().includes(search);
+            return session.name.toLowerCase().includes(search.toLowerCase());
           })
           .map((session) => (
             <SavedSessionTile
@@ -51,15 +56,19 @@ export function SavedSessions() {
             ></SavedSessionTile>
           ))
       ) : (
-        <Center>
-          <Text c="dimmed">No saved sessions yet..</Text>
+        <Center m="xl">
+          <Text c="dimmed" ta="center">
+            <IconProgressHelp size={80} stroke={1.5} />
+            <br />
+            No saved sessions yet..
+          </Text>
         </Center>
       )}
       <Divider />
       <NavLink
-        href={`/sessions/add`}
+        href={`/sessions/add?${String(new URLSearchParams({ name: search }))}`}
         active
-        label="Create new from scratch.."
+        label={`Create ${search || "new"} from scratch..`}
         rightSection={
           <IconPlus size={12} stroke={1.5} className="mantine-rotate-rtl" />
         }

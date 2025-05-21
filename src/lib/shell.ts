@@ -41,12 +41,6 @@ export const getPIDbyName = (name: string): number | undefined => {
   }
 };
 
-// export const stayOpenScript = `while true; do ${
-//   process.env.DEFAULT_SHELL ?? "bash"
-// }; done`;
-
-export const stayOpenScript = `exec ${process.env.DEFAULT_SHELL || "bash"}`;
-
 export const getMarzianDir = () => {
   const marzianDir = path.join(homedir(), ".marzian");
   if (!existsSync(marzianDir)) {

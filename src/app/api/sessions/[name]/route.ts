@@ -1,4 +1,9 @@
-import { deleteSession, getSessionWithCommand, TmuxError } from "@/lib/session";
+import {
+  deleteSession,
+  getSession,
+  getSessionCommand,
+  TmuxError,
+} from "@/lib/session";
 import { Details, SessionResponse, SpawnError } from "@/utils/interfaces";
 import { internalServerError, notFound } from "@/utils/server";
 import { type NextRequest, NextResponse } from "next/server";
@@ -11,10 +16,10 @@ export async function GET(
 ): Promise<NextResponse<SessionResponse | Details>> {
   const { name } = await params;
 
-  const session = getSessionWithCommand(name);
+  const session = getSession(name);
 
   if (session) {
-    return NextResponse.json(session);
+    return NextResponse.json({ ...session, command: getSessionCommand(name) });
   }
 
   return notFound();

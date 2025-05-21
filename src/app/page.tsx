@@ -79,7 +79,7 @@ export default function HomePage() {
               <Text ml="lg" my="md" c="dimmed">
                 Nothing is started yet?&nbsp;
               </Text>
-              <Anchor href="/sessions/add-helper">Start a new session.</Anchor>
+              <Anchor onClick={open}>Start a new session.</Anchor>
             </Flex>
           )}
         </Card>

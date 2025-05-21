@@ -11,24 +11,15 @@ import {
   Button,
   Card,
   Center,
-  Collapse,
   Container,
   Group,
-  Paper,
   Textarea,
   TextInput,
   Title,
-  useComputedColorScheme,
-  useMantineTheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useToggle } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import {
-  IconArrowBarDown,
-  IconArrowBarUp,
-  IconPlayerPlay,
-} from "@tabler/icons-react";
+import { IconPlayerPlay } from "@tabler/icons-react";
 import { isAxiosError } from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -41,7 +32,6 @@ export default function AddSessionPage() {
     initialValues: {
       name: searchParams.get("name") ?? "",
       command: searchParams.get("command") ?? "",
-      postCommand: process.env.NEXT_PUBLIC_DEFAULT_POST_COMMAND,
     },
     validate: {
       name: (value) =>
@@ -51,12 +41,6 @@ export default function AddSessionPage() {
   });
 
   const router = useRouter();
-
-  const [openedAdditionalSettings, toggleAdditionalSettings] = useToggle();
-
-  const theme = useMantineTheme();
-
-  const colorScheme = useComputedColorScheme();
 
   const [loading, setLoading] = useState(false);
 
@@ -80,18 +64,7 @@ export default function AddSessionPage() {
 
             addSession
               .mutateAsync({
-                session: {
-                  name: values.name,
-                  // Append post command if present (and replace $name)
-                  command: `${values.command}${
-                    values.postCommand
-                      ? `\n${values.postCommand.replaceAll(
-                          "$name",
-                          values.name
-                        )}`
-                      : ""
-                  }`,
-                },
+                session: values,
               })
               .then((response) => {
                 router.replace(`/sessions/${response.data.name}`);
@@ -136,48 +109,8 @@ export default function AddSessionPage() {
             {...form.getInputProps("command")}
             classNames={{ input: styles.script }}
           />
-          <Collapse in={openedAdditionalSettings} pt="1px">
-            <Paper
-              withBorder
-              mt="md"
-              p="md"
-              shadow="none"
-              style={{
-                backgroundColor:
-                  colorScheme === "light"
-                    ? theme.colors.gray[0]
-                    : theme.colors.dark[5],
-              }}
-            >
-              <Title order={6}>Additional Settings</Title>
-              <Textarea
-                mt="md"
-                label="Post command"
-                description="Use $name to insert session name in script."
-                key={form.key("postCommand")}
-                autosize
-                minRows={1}
-                {...form.getInputProps("postCommand")}
-                classNames={{ input: styles.script }}
-              />
-            </Paper>
-          </Collapse>
+
           <Group justify="flex-end" mt="md">
-            <Button
-              variant="default"
-              onClick={() => {
-                toggleAdditionalSettings();
-              }}
-              rightSection={
-                openedAdditionalSettings ? (
-                  <IconArrowBarUp size={14} />
-                ) : (
-                  <IconArrowBarDown size={14} />
-                )
-              }
-            >
-              Additional settings
-            </Button>
             <Button
               rightSection={<IconPlayerPlay size={14} />}
               type="submit"

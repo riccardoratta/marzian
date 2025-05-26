@@ -1,9 +1,9 @@
-.toolbarbutton {
+.toolbar-button {
     width: 30px;
     height: 30px;
     box-shadow: none !important;
 
-    .toolbarbuttonicon {
+    .toolbar-button-icon {
         width: 70%;
         height: 70%;
     }

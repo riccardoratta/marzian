@@ -12,7 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { ListSkeleton } from "@/components/list-skeleton";
 import { useState } from "react";
-import styles from "./saved-sessions.module.css";
+import styles from "./saved-sessions-picker.module.css";
 
 export function SavedSessionsPicker() {
   const { isLoading, data } = useAxiosQuery<SavedSessionsResponse>({

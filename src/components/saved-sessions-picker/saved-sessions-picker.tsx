@@ -39,7 +39,9 @@ export function SavedSessionsPicker() {
       />
 
       <NavLink
-        href={`/sessions/add?${String(new URLSearchParams({ name: search }))}`}
+        href={`/sessions/add${
+          search && `?${new URLSearchParams({ name: search })}`
+        }`}
         active
         label={`Create ${search || "new"} from scratch..`}
         rightSection={

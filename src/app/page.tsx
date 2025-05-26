@@ -23,7 +23,7 @@ import { SessionsResponse } from "@/utils/interfaces";
 import logo from "@/utils/logo";
 import { api } from "@/utils/http";
 import { useDisclosure } from "@mantine/hooks";
-import { SavedSessions } from "@/components/saved-sessions";
+import { SavedSessionsPicker } from "@/components/saved-sessions-picker";
 import { ListSkeleton } from "@/components/list-skeleton";
 
 export default function HomePage() {
@@ -44,7 +44,7 @@ export default function HomePage() {
         padding={0}
         radius="md"
       >
-        <SavedSessions />
+        <SavedSessionsPicker />
       </Modal>
       <Container py="xl" px={0}>
         <Center mb="md">

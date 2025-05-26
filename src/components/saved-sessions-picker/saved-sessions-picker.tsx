@@ -14,7 +14,7 @@ import { ListSkeleton } from "@/components/list-skeleton";
 import { useState } from "react";
 import styles from "./saved-sessions.module.css";
 
-export function SavedSessions() {
+export function SavedSessionsPicker() {
   const { isLoading, data } = useAxiosQuery<SavedSessionsResponse>({
     client: api,
     reactQuery: { queryKey: ["sessions", "saved"] },
@@ -32,7 +32,7 @@ export function SavedSessions() {
         radius={0}
         aria-label="Search saved sessions"
         size="md"
-        classNames={{ input: styles["without-outline"] }}
+        classNames={{ input: styles["remove-side-border"] }}
         onChange={(e) => {
           setSearch(e.target.value);
         }}

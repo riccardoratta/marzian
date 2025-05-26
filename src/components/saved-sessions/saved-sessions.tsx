@@ -3,7 +3,7 @@
 import { api } from "@/utils/http";
 import { SavedSession, SavedSessionsResponse } from "@/utils/interfaces";
 import { useAxiosQuery } from "@caplit/axios-query";
-import { Center, Divider, NavLink, Text, TextInput } from "@mantine/core";
+import { Center, NavLink, Text, TextInput } from "@mantine/core";
 import {
   IconChevronRight,
   IconPlus,
@@ -36,6 +36,15 @@ export function SavedSessions() {
         onChange={(e) => {
           setSearch(e.target.value);
         }}
+      />
+
+      <NavLink
+        href={`/sessions/add?${String(new URLSearchParams({ name: search }))}`}
+        active
+        label={`Create ${search || "new"} from scratch..`}
+        rightSection={
+          <IconPlus size={12} stroke={1.5} className="mantine-rotate-rtl" />
+        }
       />
 
       {isLoading ? (
@@ -72,15 +81,6 @@ export function SavedSessions() {
           </Text>
         </Center>
       )}
-      <Divider />
-      <NavLink
-        href={`/sessions/add?${String(new URLSearchParams({ name: search }))}`}
-        active
-        label={`Create ${search || "new"} from scratch..`}
-        rightSection={
-          <IconPlus size={12} stroke={1.5} className="mantine-rotate-rtl" />
-        }
-      />
     </>
   );
 }

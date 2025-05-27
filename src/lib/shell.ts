@@ -1,6 +1,5 @@
 import { execSync } from "child_process";
 import { existsSync, mkdirSync } from "fs";
-import { homedir } from "os";
 import path from "path";
 
 export const getPIDbyName = (name: string): number | undefined => {
@@ -42,7 +41,7 @@ export const getPIDbyName = (name: string): number | undefined => {
 };
 
 export const getMarzianDir = () => {
-  const marzianDir = path.join(homedir(), ".marzian");
+  const marzianDir = path.join(process.env.WORKING_DIR, ".marzian");
   if (!existsSync(marzianDir)) {
     mkdirSync(marzianDir);
   }

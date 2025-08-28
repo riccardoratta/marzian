@@ -21,9 +21,7 @@ if (dev) {
   console.log("Development mode");
 }
 
-if (!options.port) {
-  options.port = dev ? 3000 : 8080;
-}
+options.port ??= dev ? 3000 : 8080;
 
 const app = next({
   customServer: true,

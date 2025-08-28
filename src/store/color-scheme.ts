@@ -33,7 +33,7 @@ const CookieColorSchemeManager = (): MantineColorSchemeManager => ({
       | MantineColorScheme
       | undefined;
 
-    if (!value) value = defaultValue;
+    value ??= defaultValue;
 
     return value;
   },

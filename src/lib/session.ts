@@ -161,7 +161,7 @@ export const createSession = (name: string, command?: string) => {
       if (code === 0) {
         resolve();
       } else {
-        if (stderr.toString().trim().startsWith("duplicate session")) {
+        if (stderr.trim().startsWith("duplicate session")) {
           reject(
             new TmuxError("There is another tmux session with the same name.")
           );

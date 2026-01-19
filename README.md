@@ -55,7 +55,7 @@ Defaults to `3000`.
 
 The installation script is designed to be "battery-included." If Node.js is not
 installed on the system, it will be installed using [nvm](https://github.com/nvm-sh/nvm)
-(v22). Additionally, the script ensures that Marzian is enabled globally.
+(v24). Additionally, the script ensures that Marzian is enabled globally.
 
 ### Run (production)
 

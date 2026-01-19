@@ -27,7 +27,7 @@ export const getSessions = (): Session[] => {
   const sessions: Session[] = [];
 
   const sessionsInMarzianDir = getSavedSessions().map(
-    (session) => session.name
+    (session) => session.name,
   );
 
   for (const line of lsOutput.split("\n")) {
@@ -89,7 +89,7 @@ export const createSession = (name: string, command?: string) => {
     writeFileSync(
       prevScriptPath,
       process.env.PREV_COMMAND.replaceAll("$name", name) + "\n",
-      EXEC_PERMISSION
+      EXEC_PERMISSION,
     );
 
     if (!existsSync(prevScriptPath)) {
@@ -103,7 +103,7 @@ export const createSession = (name: string, command?: string) => {
     writeFileSync(
       postScriptPath,
       process.env.POST_COMMAND.replaceAll("$name", name) + "\n",
-      EXEC_PERMISSION
+      EXEC_PERMISSION,
     );
 
     if (!existsSync(postScriptPath)) {
@@ -117,7 +117,7 @@ export const createSession = (name: string, command?: string) => {
       (prevScriptPath ? `source ${prevScriptPath}\n` : "") +
         command +
         (postScriptPath ? `\nsource ${postScriptPath}\n` : ""),
-      EXEC_PERMISSION
+      EXEC_PERMISSION,
     );
   } else {
     if (!existsSync(scriptPath)) {
@@ -130,19 +130,10 @@ export const createSession = (name: string, command?: string) => {
   }
 
   const spawnRes = spawn(
-    "tmux",
-    [
-      "new-session",
-      "-d",
-      "-s",
-      name,
-      "-c",
-      process.env.WORKING_DIR,
-      scriptPath,
-    ],
+    `tmux new-session -d -s ${name} -c ${process.env.WORKING_DIR} ${scriptPath}`,
     {
       shell: true,
-    }
+    },
   );
 
   let stdout = "";
@@ -163,7 +154,7 @@ export const createSession = (name: string, command?: string) => {
       } else {
         if (stderr.trim().startsWith("duplicate session")) {
           reject(
-            new TmuxError("There is another tmux session with the same name.")
+            new TmuxError("There is another tmux session with the same name."),
           );
         } else {
           reject(
@@ -172,7 +163,7 @@ export const createSession = (name: string, command?: string) => {
               exitCode: spawnRes.exitCode,
               stdout,
               stderr,
-            })
+            }),
           );
         }
       }
@@ -307,7 +298,7 @@ export const getSavedSessions = (): SavedSession[] => {
   return readdirSync(getMarzianDir())
     .filter(
       (sessionName) =>
-        !sessionName.endsWith(".prev") && !sessionName.endsWith(".post")
+        !sessionName.endsWith(".prev") && !sessionName.endsWith(".post"),
     )
     .map((sessionName) => {
       return {

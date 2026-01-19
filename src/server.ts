@@ -6,9 +6,10 @@ import next from "next";
 import { Server } from "socket.io";
 import { Option, program } from "commander";
 import { parse } from "url";
+import path from "path";
 
 program.addOption(
-  new Option("--port <number>", "port number").default(undefined)
+  new Option("--port <number>", "port number").default(undefined),
 );
 
 // Parse the command line arguments
@@ -31,6 +32,8 @@ const app = next({
 });
 
 const handler = app.getRequestHandler();
+
+globalThis.sourceDir = path.dirname(__dirname);
 
 void app.prepare().then(() => {
   const httpServer = createServer((req, res) => {

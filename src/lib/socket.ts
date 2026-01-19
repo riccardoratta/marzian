@@ -17,7 +17,7 @@ const spawnTmux = (sessionName: string) => {
 };
 
 export const setupSocketHandler = (
-  io: Server<SocketClientToServerEvents, SocketServerToClientEvents>
+  io: Server<SocketClientToServerEvents, SocketServerToClientEvents>,
 ) => {
   io.of((name, _, next) => {
     const session = getSession(name.substring(1));
@@ -31,7 +31,7 @@ export const setupSocketHandler = (
           name: "SessionNotFound",
           message: `Session "${name}" not found.`,
         },
-        false
+        false,
       );
     }
   }).on("connection", (socket) => {

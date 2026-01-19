@@ -1,0 +1,12 @@
+set -e
+# Define a function to handle errors
+handle_error() {
+    curl -s -o /dev/null "ntfy.sh/$NTFY_CHANNEL" -d "An error occurred at session '$SESSION_NAME'."
+    # Additional error handling code can go here
+    # ...
+    # Stay open script
+    exec "${SHELL:-/bin/sh}"
+}
+
+# Set the trap to call the error handler function on ERR signal
+trap 'handle_error $LINENO' ERR

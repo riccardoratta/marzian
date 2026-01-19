@@ -1,0 +1,3 @@
+curl -s -o /dev/null "ntfy.sh/$NTFY_CHANNEL" -d "Session '$SESSION_NAME' completed."
+# Stay open script
+exec "${SHELL:-/bin/sh}"

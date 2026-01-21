@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _: NextRequest,
-  { params }: { params: Promise<{ name: string }> }
+  { params }: { params: Promise<{ name: string }> },
 ): Promise<NextResponse<SessionResponse | Details>> {
   const { name } = await params;
 
@@ -27,7 +27,7 @@ export async function GET(
 
 export async function DELETE(
   _: NextRequest,
-  { params }: { params: Promise<{ name: string }> }
+  { params }: { params: Promise<{ name: string }> },
 ): Promise<NextResponse<SpawnError | Details>> {
   const { name } = await params;
 

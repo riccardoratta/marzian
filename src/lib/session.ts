@@ -6,9 +6,17 @@ import {
   existsSync,
   readFileSync,
   readdirSync,
+  unlinkSync,
+  mkdirSync,
 } from "fs";
 import { SavedSession, Session } from "@/utils/interfaces";
-import { getPostScriptPath, getPrevScriptPath, getScriptPath } from "./file";
+import {
+  getPostScriptPath,
+  getPrevScriptPath,
+  getScriptErrorPath,
+  getScriptPath,
+} from "./file";
+import { dirname } from "path";
 
 const lsRe = /^([^:]+):\s+(\d+)\s+windows\s+\(created\s+(.+)\)$/;
 
@@ -30,6 +38,7 @@ export const getSessions = (): Session[] => {
     (session) => session.name,
   );
 
+  // Loop for all the sessions in the "tmux ls" output
   for (const line of lsOutput.split("\n")) {
     if (line.length !== 0) {
       const match = lsRe.exec(line.trim());
@@ -38,7 +47,26 @@ export const getSessions = (): Session[] => {
         if (parseInt(match[2]) === 1) {
           // Check if session has been created by marzian
           if (sessionsInMarzianDir.includes(match[1])) {
-            sessions.push({ name: match[1], createdAt: Date.parse(match[3]) });
+            const name = match[1];
+
+            let errorAt = undefined;
+
+            // Check if the session terminated with an error
+            const scriptErrorPath = getScriptErrorPath(name);
+            if (existsSync(scriptErrorPath)) {
+              errorAt = new Date(
+                // Parse the termination time
+                parseInt(readFileSync(scriptErrorPath, "utf8").trim()) * 1_000,
+              );
+            }
+
+            console.log(match[3]);
+
+            sessions.push({
+              name,
+              createdAt: new Date(Date.parse(match[3])),
+              errorAt,
+            });
           }
         }
       }
@@ -92,6 +120,18 @@ export const createSession = (name: string, command?: string) => {
     }
   }
 
+  const scriptErrorPath = getScriptErrorPath(name);
+
+  // Create errors directory, if not present
+  if (!existsSync(dirname(scriptErrorPath))) {
+    mkdirSync(dirname(scriptErrorPath));
+  }
+
+  // Clear any possible past error for this script
+  if (existsSync(scriptErrorPath)) {
+    unlinkSync(scriptErrorPath);
+  }
+
   if (!process.env.WORKING_DIR) {
     throw Error("Env variable WORKING_DIR not set.");
   }
@@ -99,6 +139,7 @@ export const createSession = (name: string, command?: string) => {
   const envVariables = [
     `-e "NTFY_CHANNEL=${process.env.NTFY_CHANNEL}"`,
     `-e "SESSION_NAME=${name}"`,
+    `-e "SCRIPT_ERROR_PATH=${scriptErrorPath}"`,
   ];
 
   const spawnRes = spawn(
@@ -169,14 +210,19 @@ const killSession = (name: string) => {
 };
 
 /**
- * Delete a session from the file system (and its prev and post scripts) and
- * kill it from tmux (using `killSession`).
+ * Delete a session from the file system (and its error file) and kill it from
+ * tmux (using `killSession`).
  * @param name - The name of the session to delete.
  */
 export const deleteSession = (name: string) => {
   const scriptPath = getScriptPath(name);
   if (existsSync(scriptPath)) {
     rmSync(scriptPath);
+  }
+
+  const scriptErrorPath = getScriptErrorPath(name);
+  if (existsSync(scriptErrorPath)) {
+    rmSync(scriptErrorPath);
   }
 
   killSession(name);
@@ -246,8 +292,7 @@ export class TmuxError extends Error {
  * Given a session name return its launch command saved on the marzian dir.
  */
 export const getSessionCommand = (name: string) => {
-  return readFileSync(getScriptPath(name))
-    .toString()
+  return readFileSync(getScriptPath(name), "utf8")
     .replace(RegExp(`source .+.prev\n`), "")
     .replace(RegExp(`\nsource .+.post\n`), "");
 };
@@ -257,10 +302,7 @@ export const getSessionCommand = (name: string) => {
  */
 export const getSavedSessions = (): SavedSession[] => {
   return readdirSync(getMarzianDir())
-    .filter(
-      (sessionName) =>
-        !sessionName.endsWith(".prev") && !sessionName.endsWith(".post"),
-    )
+    .filter((name) => name !== ".error")
     .map((sessionName) => {
       return {
         name: sessionName,

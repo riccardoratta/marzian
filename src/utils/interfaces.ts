@@ -19,8 +19,9 @@ export interface SessionsResponse {
 
 export interface Session {
   name: string;
-  createdAt?: number;
+  createdAt?: Date;
   pid?: number;
+  errorAt?: Date;
 }
 
 export const sessionNameSchema = z.string().regex(/^[a-zA-Z0-9\-_]+$/, {

@@ -35,6 +35,8 @@ export default function HomePage() {
     axios: { url: "sessions" },
   });
 
+  console.log(data);
+
   return (
     <>
       <Modal

@@ -2,6 +2,8 @@ set -e
 # Define a function to handle errors
 handle_error() {
     curl -s -o /dev/null "ntfy.sh/$NTFY_CHANNEL" -d "An error occurred at session '$SESSION_NAME'."
+    # Signal to marzian that the process terminated with an error by creating the error file
+    date +%s > "$SCRIPT_ERROR_PATH"
     # Additional error handling code can go here
     # ...
     # Stay open script

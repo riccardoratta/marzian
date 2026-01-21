@@ -12,7 +12,6 @@ import {
   Button,
   Card,
   Container,
-  Divider,
   Group,
   Text,
   Tooltip,
@@ -38,6 +37,7 @@ export function Session({ session }: { session: SessionResponse }) {
 
   useEffect(() => {
     const s = io(`/${session.name}`);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSocket(s);
 
     return () => {
@@ -97,76 +97,80 @@ export function Session({ session }: { session: SessionResponse }) {
   const router = useRouter();
 
   return (
-    <Container p={0} style={{ height: "100%" }}>
-      <Group justify="space-between" px={0} py="xs">
-        <Text fw={700}>{session.name}</Text>
-        <Group gap="xs">
-          <Tooltip label="Interactive">
+    <Container h="100%">
+      <Card py={0} style={{ borderEndStartRadius: 0, borderEndEndRadius: 0 }}>
+        <Group justify="space-between" px={0} py="xs">
+          <Text fw={700}>{session.name}</Text>
+          <Group gap="xs">
+            <Tooltip label="Interactive">
+              <ActionIcon
+                size="md"
+                variant="light"
+                onClick={() => {
+                  toggleEditable();
+                }}
+                color={!editable ? "gray" : undefined}
+                className={styles["toolbar-button"]}
+              >
+                {editable ? (
+                  <IconKeyboard
+                    className={styles["toolbar-button-icon"]}
+                    stroke={1.5}
+                  />
+                ) : (
+                  <IconKeyboardOff
+                    className={styles["toolbar-button-icon"]}
+                    stroke={1.5}
+                  />
+                )}
+              </ActionIcon>
+            </Tooltip>
+            <Button
+              size="xs"
+              variant="light"
+              aria-label="Restart"
+              onClick={() =>
+                void restartSession.mutateAsync(null).then(() => {
+                  window.location.reload();
+                })
+              }
+              leftSection={<IconRepeat size={14} stroke={1.5} />}
+            >
+              Restart
+            </Button>
+            <ActionIcon
+              size="md"
+              variant="default"
+              aria-label="Download session"
+              className={styles["toolbar-button"]}
+              component="a"
+              href={`/api/sessions/${session.name}/download`}
+            >
+              <IconDownload
+                className={styles["toolbar-button-icon"]}
+                stroke={1.5}
+              />
+            </ActionIcon>
             <ActionIcon
               size="md"
               variant="light"
-              onClick={() => {
-                toggleEditable();
-              }}
-              color={!editable ? "gray" : undefined}
+              color="red"
+              aria-label="Settings"
+              onClick={() =>
+                void deleteSession.mutateAsync(null).then(() => {
+                  router.replace("/");
+                })
+              }
               className={styles["toolbar-button"]}
             >
-              {editable ? (
-                <IconKeyboard
-                  className={styles["toolbar-button-icon"]}
-                  stroke={1.5}
-                />
-              ) : (
-                <IconKeyboardOff
-                  className={styles["toolbar-button-icon"]}
-                  stroke={1.5}
-                />
-              )}
+              <IconTrash
+                className={styles["toolbar-button-icon"]}
+                stroke={1.5}
+              />
             </ActionIcon>
-          </Tooltip>
-          <Button
-            size="xs"
-            variant="light"
-            aria-label="Restart"
-            onClick={() =>
-              void restartSession.mutateAsync(null).then(() => {
-                window.location.reload();
-              })
-            }
-            leftSection={<IconRepeat size={14} stroke={1.5} />}
-          >
-            Restart
-          </Button>
-          <ActionIcon
-            size="md"
-            variant="default"
-            aria-label="Download session"
-            className={styles["toolbar-button"]}
-            component="a"
-            href={`/api/sessions/${session.name}/download`}
-          >
-            <IconDownload
-              className={styles["toolbar-button-icon"]}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <ActionIcon
-            size="md"
-            variant="light"
-            color="red"
-            aria-label="Settings"
-            onClick={() =>
-              void deleteSession.mutateAsync(null).then(() => {
-                router.replace("/");
-              })
-            }
-            className={styles["toolbar-button"]}
-          >
-            <IconTrash className={styles["toolbar-button-icon"]} stroke={1.5} />
-          </ActionIcon>
+          </Group>
         </Group>
-      </Group>
-      <Divider />
+      </Card>
       <TerminalComponent
         ref={terminalRef}
         onData={dataHandler}

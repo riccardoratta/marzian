@@ -5,11 +5,11 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import "@xterm/xterm/css/xterm.css";
-import { Card, Container, Group } from "@mantine/core";
+import { Container } from "@mantine/core";
 import { Terminal } from "@xterm/xterm";
 import { useElementSize } from "@mantine/hooks";
 import { TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS } from "@/utils/misc";
+import "@xterm/xterm/css/xterm.css";
 
 export interface TerminalMethods {
   writeln: (value: string) => void;
@@ -109,18 +109,12 @@ const TerminalComponent = forwardRef<
         ref={terminalSizeRef}
         style={{
           width: "100%",
-          height: "100%",
+          height: "calc(100% - 60px)",
         }}
         px={0}
         py={0}
       >
-        <div
-          ref={terminalContainerRef}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        ></div>
+        <div ref={terminalContainerRef}></div>
       </Container>
     </>
   );

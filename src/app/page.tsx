@@ -5,6 +5,7 @@ import { useAxiosQuery } from "@caplit/axios-query";
 import {
   Alert,
   Anchor,
+  Box,
   Button,
   Card,
   Container,
@@ -19,12 +20,18 @@ import {
 } from "@mantine/core";
 import { SessionTile } from "@/components/session-tile";
 import { IconInfoCircle, IconPlus } from "@tabler/icons-react";
-import { SessionsResponse, SettingsResponse } from "@/utils/interfaces";
+import {
+  SavedSession,
+  SessionsResponse,
+  SettingsResponse,
+} from "@/utils/interfaces";
 import logo from "@/utils/logo";
 import { api } from "@/utils/http";
 import { useDisclosure } from "@mantine/hooks";
 import { SavedSessionsPicker } from "@/components/saved-sessions-picker";
 import { ListSkeleton } from "@/components/list-skeleton";
+import { AddSession } from "@/components/add-session";
+import { useState } from "react";
 
 export default function HomePage() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -41,18 +48,24 @@ export default function HomePage() {
     axios: { url: "sessions" },
   });
 
-  console.log(sessionsQuery.data);
+  const [savedSession, setSavedSession] = useState<SavedSession>();
 
   return (
     <>
       <Modal
         opened={opened}
         onClose={close}
-        withCloseButton={false}
-        padding={0}
-        radius="md"
+        title="Add a new session"
+        size="xl"
       >
-        <SavedSessionsPicker />
+        <Flex>
+          <Box mr="md">
+            <SavedSessionsPicker onSessionPick={setSavedSession} />
+          </Box>
+          <Box flex={2}>
+            <AddSession savedSession={savedSession} />
+          </Box>
+        </Flex>
       </Modal>
       <Container py="xl" px={0}>
         <Stack align="left" justify="center" mb="lg" gap="xs">

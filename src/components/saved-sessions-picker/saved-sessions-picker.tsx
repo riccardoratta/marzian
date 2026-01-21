@@ -91,7 +91,7 @@ function SavedSessionTile({ session }: { session: SavedSession }) {
   return (
     <NavLink
       href={`/sessions/add?${String(
-        new URLSearchParams({ name: session.name, command: session.command })
+        new URLSearchParams({ name: session.name, command: session.command }),
       )}`}
       label={session.name}
       rightSection={

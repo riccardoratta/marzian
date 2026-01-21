@@ -23,14 +23,14 @@ const TerminalComponent = forwardRef<
     onData: (data: string) => void;
     onResize: (cols: number, rows: number) => void;
   }
->(function TerminalComponent(props, ref) {
+>(function TerminalComponent({ onData, onResize }, ref) {
   const terminalContainerRef = useRef<HTMLDivElement>(null);
 
   const terminalRef = useRef(
     new Terminal({ cols: TMUX_DEFAULT_COLS, rows: TMUX_DEFAULT_ROWS }),
   );
 
-  const terminalSizeObserver = useElementSize();
+  const { width, height, ref: terminalSizeObserver } = useElementSize();
 
   useEffect(() => {
     const terminal = terminalRef.current;
@@ -42,18 +42,18 @@ const TerminalComponent = forwardRef<
       // Set resize
       terminal.resize(TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS);
     }
-  }, [terminalRef, terminalContainerRef]);
+  }, []);
 
   useEffect(() => {
     // Attach onData callback
     const disposable = terminalRef.current.onData((data) => {
-      props.onData(data);
+      onData(data);
     });
 
     return () => {
       disposable.dispose();
     };
-  }, [terminalRef, props]);
+  }, [terminalRef, onData]);
 
   useImperativeHandle(ref, () => {
     return {
@@ -76,16 +76,16 @@ const TerminalComponent = forwardRef<
   const resize = useCallback(
     (cols: number, rows: number) => {
       terminalRef.current.resize(cols, rows);
-      props.onResize(cols, rows);
+      onResize(cols, rows);
     },
-    [terminalRef, props],
+    [onResize],
   );
 
   useEffect(() => {
-    console.log(terminalSizeObserver.height);
+    console.log(height);
 
-    const new_cols = Math.floor(terminalSizeObserver.width / 9.35);
-    const new_rows = Math.floor(terminalSizeObserver.height / 17.25);
+    const new_cols = Math.floor(width / 9.35);
+    const new_rows = Math.floor(height / 17.25);
 
     const terminal = terminalRef.current;
 
@@ -96,16 +96,11 @@ const TerminalComponent = forwardRef<
     if (terminal.rows !== new_rows && new_rows !== 0) {
       resize(terminal.cols, new_rows);
     }
-  }, [
-    terminalSizeObserver.width,
-    terminalSizeObserver.height,
-    terminalRef,
-    resize,
-  ]);
+  }, [width, height, resize]);
 
   return (
     <Card
-      ref={terminalSizeObserver.ref}
+      ref={terminalSizeObserver}
       style={{
         backgroundColor: "black",
         borderTopLeftRadius: 0,

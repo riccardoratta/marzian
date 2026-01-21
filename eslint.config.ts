@@ -1,24 +1,19 @@
-// @ts-check
-
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+import { globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
-const eslintConfig = tseslint.config(
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   tseslint.configs.recommendedTypeChecked,
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
   {
-    ignores: ["*.cjs"],
     languageOptions: {
       parserOptions: {
         projectService: { allowDefaultProject: ["*.mjs"] },
@@ -30,8 +25,9 @@ const eslintConfig = tseslint.config(
       "@typescript-eslint/no-unsafe-assignment": "error",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "error",
+      "react-hooks/set-state-in-effect": "warn",
     },
-  }
-);
+  },
+]);
 
 export default eslintConfig;

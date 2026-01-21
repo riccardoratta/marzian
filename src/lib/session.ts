@@ -60,8 +60,6 @@ export const getSessions = (): Session[] => {
               );
             }
 
-            console.log(match[3]);
-
             sessions.push({
               name,
               createdAt: new Date(Date.parse(match[3])),

@@ -10,3 +10,7 @@ body {
     var(--mantine-color-dark-8)
   );
 }
+
+.xterm-screen {
+  margin: auto;
+}

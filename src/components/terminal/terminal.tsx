@@ -6,7 +6,7 @@ import {
   useRef,
 } from "react";
 import "@xterm/xterm/css/xterm.css";
-import { Card } from "@mantine/core";
+import { Card, Container, Group } from "@mantine/core";
 import { Terminal } from "@xterm/xterm";
 import { useElementSize } from "@mantine/hooks";
 import { TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS } from "@/utils/misc";
@@ -30,7 +30,7 @@ const TerminalComponent = forwardRef<
     new Terminal({ cols: TMUX_DEFAULT_COLS, rows: TMUX_DEFAULT_ROWS }),
   );
 
-  const { width, height, ref: terminalSizeObserver } = useElementSize();
+  const { width, height, ref: terminalSizeRef } = useElementSize();
 
   useEffect(() => {
     const terminal = terminalRef.current;
@@ -82,10 +82,8 @@ const TerminalComponent = forwardRef<
   );
 
   useEffect(() => {
-    console.log(height);
-
-    const new_cols = Math.floor(width / 9.35);
-    const new_rows = Math.floor(height / 17.25);
+    const new_cols = Math.floor(width / 9.25);
+    const new_rows = Math.floor(height / 17.875);
 
     const terminal = terminalRef.current;
 
@@ -99,22 +97,32 @@ const TerminalComponent = forwardRef<
   }, [width, height, resize]);
 
   return (
-    <Card
-      ref={terminalSizeObserver}
-      style={{
-        backgroundColor: "black",
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        height: "100%",
-      }}
-      px="md"
-      py="xs"
-    >
+    <>
       <div
-        ref={terminalContainerRef}
-        style={{ width: "100%", height: "100%" }}
+        style={{
+          width: "100%",
+          height: "10px",
+          backgroundColor: "black",
+        }}
       ></div>
-    </Card>
+      <Container
+        ref={terminalSizeRef}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        px={0}
+        py={0}
+      >
+        <div
+          ref={terminalContainerRef}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        ></div>
+      </Container>
+    </>
   );
 });
 

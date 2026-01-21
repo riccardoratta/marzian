@@ -7,7 +7,16 @@ import type {
   SocketClientToServerEvents,
   SocketServerToClientEvents,
 } from "@/utils/interfaces";
-import { ActionIcon, Button, Card, Group, Text, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Card,
+  Container,
+  Divider,
+  Group,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import { useAxiosMutation } from "@caplit/axios-query";
 import { useToggle } from "@mantine/hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -88,8 +97,8 @@ export function Session({ session }: { session: SessionResponse }) {
   const router = useRouter();
 
   return (
-    <Card withBorder padding={0} style={{ height: "100%" }}>
-      <Group justify="space-between" px="md" py="xs">
+    <Container p={0} style={{ height: "100%" }}>
+      <Group justify="space-between" px={0} py="xs">
         <Text fw={700}>{session.name}</Text>
         <Group gap="xs">
           <Tooltip label="Interactive">
@@ -157,12 +166,12 @@ export function Session({ session }: { session: SessionResponse }) {
           </ActionIcon>
         </Group>
       </Group>
-
+      <Divider />
       <TerminalComponent
         ref={terminalRef}
         onData={dataHandler}
         onResize={resizeHandler}
       />
-    </Card>
+    </Container>
   );
 }

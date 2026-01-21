@@ -51,6 +51,7 @@ export interface SocketServerToClientEvents {
 
 export interface SocketClientToServerEvents {
   write: (data: string) => void;
+  resize: (data: { cols: number; rows: number }) => void;
 }
 
 export type SavedSession = SessionCreate;
@@ -61,5 +62,5 @@ export interface SavedSessionsResponse {
 
 export interface SettingsResponse {
   marzianDir: string;
-  tmuxHistoryLimit: number;
+  tmuxHistoryLimit?: number;
 }

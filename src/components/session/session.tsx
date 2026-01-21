@@ -63,7 +63,16 @@ export function Session({ session }: { session: SessionResponse }) {
         socket.emit("write", data);
       }
     },
-    [socket, editable]
+    [socket, editable],
+  );
+
+  const resizeHandler = useCallback(
+    (cols: number, rows: number) => {
+      if (socket) {
+        socket.emit("resize", { rows, cols });
+      }
+    },
+    [socket],
   );
 
   const deleteSession = useAxiosMutation({
@@ -79,7 +88,7 @@ export function Session({ session }: { session: SessionResponse }) {
   const router = useRouter();
 
   return (
-    <Card withBorder padding={0}>
+    <Card withBorder padding={0} style={{ height: "100%" }}>
       <Group justify="space-between" px="md" py="xs">
         <Text fw={700}>{session.name}</Text>
         <Group gap="xs">
@@ -149,7 +158,11 @@ export function Session({ session }: { session: SessionResponse }) {
         </Group>
       </Group>
 
-      <TerminalComponent ref={terminalRef} onData={dataHandler} />
+      <TerminalComponent
+        ref={terminalRef}
+        onData={dataHandler}
+        onResize={resizeHandler}
+      />
     </Card>
   );
 }

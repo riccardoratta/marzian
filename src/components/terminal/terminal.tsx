@@ -1,7 +1,15 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import "@xterm/xterm/css/xterm.css";
 import { Card } from "@mantine/core";
 import { Terminal } from "@xterm/xterm";
+import { useElementSize } from "@mantine/hooks";
+import { TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS } from "@/utils/misc";
 
 export interface TerminalMethods {
   writeln: (value: string) => void;
@@ -11,20 +19,28 @@ export interface TerminalMethods {
 
 const TerminalComponent = forwardRef<
   TerminalMethods,
-  { onData: (data: string) => void }
+  {
+    onData: (data: string) => void;
+    onResize: (cols: number, rows: number) => void;
+  }
 >(function TerminalComponent(props, ref) {
   const terminalContainerRef = useRef<HTMLDivElement>(null);
 
-  const terminalRef = useRef(new Terminal({ cols: 95, rows: 30 }));
+  const terminalRef = useRef(
+    new Terminal({ cols: TMUX_DEFAULT_COLS, rows: TMUX_DEFAULT_ROWS }),
+  );
+
+  const terminalSizeObserver = useElementSize();
 
   useEffect(() => {
-    const currentRef = terminalRef.current;
+    const terminal = terminalRef.current;
+
     // Attach terminalRef to its container
     if (terminalContainerRef.current) {
-      currentRef.open(terminalContainerRef.current);
+      terminal.open(terminalContainerRef.current);
 
       // Set resize
-      currentRef.resize(95, 30);
+      terminal.resize(TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS);
     }
   }, [terminalRef, terminalContainerRef]);
 
@@ -39,39 +55,70 @@ const TerminalComponent = forwardRef<
     };
   }, [terminalRef, props]);
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        writeln(value: string) {
-          if (value.length !== 0) {
-            terminalRef.current.writeln(value);
-          }
-        },
-        write(value: string) {
-          if (value.length !== 0) {
-            terminalRef.current.write(value);
-          }
-        },
-        clear() {
-          terminalRef.current.clear();
-        },
-      };
+  useImperativeHandle(ref, () => {
+    return {
+      writeln(value: string) {
+        if (value.length !== 0) {
+          terminalRef.current.writeln(value);
+        }
+      },
+      write(value: string) {
+        if (value.length !== 0) {
+          terminalRef.current.write(value);
+        }
+      },
+      clear() {
+        terminalRef.current.clear();
+      },
+    };
+  }, []);
+
+  const resize = useCallback(
+    (cols: number, rows: number) => {
+      terminalRef.current.resize(cols, rows);
+      props.onResize(cols, rows);
     },
-    []
+    [terminalRef, props],
   );
+
+  useEffect(() => {
+    console.log(terminalSizeObserver.height);
+
+    const new_cols = Math.floor(terminalSizeObserver.width / 9.35);
+    const new_rows = Math.floor(terminalSizeObserver.height / 17.25);
+
+    const terminal = terminalRef.current;
+
+    if (terminal.cols !== new_cols && new_cols !== 0) {
+      resize(new_cols, terminal.rows);
+    }
+
+    if (terminal.rows !== new_rows && new_rows !== 0) {
+      resize(terminal.cols, new_rows);
+    }
+  }, [
+    terminalSizeObserver.width,
+    terminalSizeObserver.height,
+    terminalRef,
+    resize,
+  ]);
 
   return (
     <Card
+      ref={terminalSizeObserver.ref}
       style={{
         backgroundColor: "black",
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        height: "100%",
       }}
       px="md"
       py="xs"
     >
-      <div ref={terminalContainerRef} style={{ width: "100%" }}></div>
+      <div
+        ref={terminalContainerRef}
+        style={{ width: "100%", height: "100%" }}
+      ></div>
     </Card>
   );
 });

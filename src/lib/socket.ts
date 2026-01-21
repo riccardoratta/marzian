@@ -5,12 +5,13 @@ import {
   SocketClientToServerEvents,
   SocketServerToClientEvents,
 } from "@/utils/interfaces";
+import { TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS } from "@/utils/misc";
 
 const attachTmux = (sessionName: string) => {
   return spawn("tmux", ["attach", "-t", sessionName], {
     name: "xterm-color",
-    cols: 95,
-    rows: 30,
+    cols: TMUX_DEFAULT_COLS,
+    rows: TMUX_DEFAULT_ROWS,
     cwd: process.env.HOME,
     env: process.env,
   });
@@ -47,6 +48,11 @@ export const setupSocketHandler = (
     // This is when we receive any command from the user
     socket.on("write", (data) => {
       p.write(data);
+    });
+
+    // This is when we receive a resize event from the user
+    socket.on("resize", (data) => {
+      p.resize(data.cols, data.rows);
     });
 
     socket.on("disconnect", () => {

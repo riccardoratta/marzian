@@ -3,10 +3,10 @@
 import { useAxiosQuery } from "@caplit/axios-query";
 
 import {
+  Alert,
   Anchor,
   Button,
   Card,
-  Center,
   Container,
   Divider,
   Flex,
@@ -18,8 +18,8 @@ import {
   Title,
 } from "@mantine/core";
 import { SessionTile } from "@/components/session-tile";
-import { IconPlus } from "@tabler/icons-react";
-import { SessionsResponse } from "@/utils/interfaces";
+import { IconInfoCircle, IconPlus } from "@tabler/icons-react";
+import { SessionsResponse, SettingsResponse } from "@/utils/interfaces";
 import logo from "@/utils/logo";
 import { api } from "@/utils/http";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,13 +29,20 @@ import { ListSkeleton } from "@/components/list-skeleton";
 export default function HomePage() {
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { isLoading, data } = useAxiosQuery<SessionsResponse>({
+  const settingsQuery = useAxiosQuery<SettingsResponse>({
+    client: api,
+    reactQuery: { queryKey: ["settings"] },
+    axios: { url: "settings" },
+  });
+
+  const sessionsQuery = useAxiosQuery<SessionsResponse>({
     client: api,
     reactQuery: { queryKey: ["sessions"] },
     axios: { url: "sessions" },
   });
 
-  console.log(data);
+  console.log(sessionsQuery.data);
+  console.log(settingsQuery.data);
 
   return (
     <>
@@ -49,31 +56,48 @@ export default function HomePage() {
         <SavedSessionsPicker />
       </Modal>
       <Container py="xl" px={0}>
-        <Center mb="md">
-          <Stack align="center" justify="center">
-            <Image src={logo} alt="Marzian logo" h={50} w={50} />
-            <Title order={3} style={{ letterSpacing: 3, color: "#868e96" }}>
-              MARZIAN
-            </Title>
-          </Stack>
-        </Center>
+        <Stack align="left" justify="center" mb="lg" gap="xs">
+          <Image src={logo} alt="Marzian logo" h={50} w={50} />
+          <Title order={3} style={{ letterSpacing: 3, color: "#868e96" }}>
+            MARZIAN
+          </Title>
+          <Text c="dimmed">{settingsQuery.data?.data.marzianDir}</Text>
+          {settingsQuery.data?.data.tmuxHistoryLimit &&
+            settingsQuery.data.data.tmuxHistoryLimit <= 10000 && (
+              <Alert variant="light" color="yellow" icon={<IconInfoCircle />}>
+                Tmux history set to {settingsQuery.data.data.tmuxHistoryLimit}{" "}
+                lines.{" "}
+                <a
+                  href="https://tmuxai.dev/tmux-increase-scrollback/"
+                  target="_blank"
+                >
+                  It may impact scrollback capability.
+                </a>
+              </Alert>
+            )}
+        </Stack>
+
         <Card withBorder padding={0}>
           <Group justify="space-between" px="md" py="xs">
             <Text fw={700}>Sessions</Text>
-            <Button
-              size="xs"
-              variant="light"
-              leftSection={<IconPlus size={14} stroke={1.5} />}
-              onClick={open}
-            >
-              Add session
-            </Button>
+
+            <Group>
+              <Button
+                size="xs"
+                variant="light"
+                leftSection={<IconPlus size={14} stroke={1.5} />}
+                onClick={open}
+              >
+                Add session
+              </Button>
+            </Group>
           </Group>
           <Divider />
-          {isLoading ? (
+          {sessionsQuery.isLoading ? (
             <ListSkeleton />
-          ) : data && data.data.sessions.length !== 0 ? (
-            data.data.sessions.map((session) => (
+          ) : sessionsQuery.data &&
+            sessionsQuery.data.data.sessions.length !== 0 ? (
+            sessionsQuery.data.data.sessions.map((session) => (
               <SessionTile key={session.name} session={session}></SessionTile>
             ))
           ) : (

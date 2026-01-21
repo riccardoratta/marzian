@@ -1,9 +1,9 @@
 import { execSync } from "child_process";
 import { existsSync, mkdirSync } from "fs";
-import path from "path";
+import { join, resolve } from "path";
 
 export const getPIDbyName = (name: string): number | undefined => {
-  const scriptPath = path.join(getMarzianDir(), name);
+  const scriptPath = join(getMarzianDir(), name);
 
   console.log(`getPIDbyName: ${scriptPath}`);
 
@@ -45,8 +45,15 @@ export const getPIDbyName = (name: string): number | undefined => {
   }
 };
 
-export const getMarzianDir = () => {
-  const marzianDir = path.join(process.env.WORKING_DIR, ".marzian");
+export const getMarzianDir = (
+  options: { absolute: boolean } = { absolute: false },
+) => {
+  let marzianDir = join(process.env.WORKING_DIR, ".marzian");
+
+  if (options.absolute) {
+    marzianDir = resolve(marzianDir);
+  }
+
   if (!existsSync(marzianDir)) {
     mkdirSync(marzianDir);
   }

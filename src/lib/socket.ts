@@ -6,7 +6,7 @@ import {
   SocketServerToClientEvents,
 } from "@/utils/interfaces";
 
-const spawnTmux = (sessionName: string) => {
+const attachTmux = (sessionName: string) => {
   return spawn("tmux", ["attach", "-t", sessionName], {
     name: "xterm-color",
     cols: 95,
@@ -38,12 +38,13 @@ export const setupSocketHandler = (
     const sessionName = socket.nsp.name.substring(1); // always remove "/"
     console.log(`A client connected to the session "${sessionName}"`);
 
-    const p = spawnTmux(sessionName);
+    const p = attachTmux(sessionName);
 
     p.onData((data) => {
       socket.emit("data", data);
     });
 
+    // This is when we receive any command from the user
     socket.on("write", (data) => {
       p.write(data);
     });

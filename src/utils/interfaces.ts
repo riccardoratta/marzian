@@ -58,3 +58,8 @@ export type SavedSession = SessionCreate;
 export interface SavedSessionsResponse {
   sessions: SavedSession[];
 }
+
+export interface SettingsResponse {
+  marzianDir: string;
+  tmuxHistoryLimit: number;
+}

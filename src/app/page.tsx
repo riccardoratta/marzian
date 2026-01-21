@@ -42,7 +42,6 @@ export default function HomePage() {
   });
 
   console.log(sessionsQuery.data);
-  console.log(settingsQuery.data);
 
   return (
     <>

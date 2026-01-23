@@ -58,7 +58,11 @@ export default function HomePage() {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Add a new session">
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={savedSession ? "Start session" : "Add session"}
+      >
         <AddSession savedSession={savedSession} />
       </Modal>
       <Container py="xl" px={0}>

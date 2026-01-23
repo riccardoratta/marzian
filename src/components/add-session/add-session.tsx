@@ -6,10 +6,9 @@ import {
   sessionNameSchema,
 } from "@/utils/interfaces";
 import { useAxiosMutation } from "@caplit/axios-query";
-import { Button, Group, Textarea, TextInput, Text } from "@mantine/core";
+import { Button, Textarea, TextInput, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IconPlayerPlayFilled } from "@tabler/icons-react";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -81,7 +80,7 @@ export function AddSession({ savedSession }: { savedSession?: SavedSession }) {
       })}
     >
       <TextInput
-        fw={600}
+        label="Name"
         placeholder="example_123"
         key={form.key("name")}
         {...form.getInputProps("name")}
@@ -95,20 +94,23 @@ export function AddSession({ savedSession }: { savedSession?: SavedSession }) {
         placeholder="ls -lah home"
         key={form.key("command")}
         autosize
-        minRows={1}
+        minRows={3}
         {...form.getInputProps("command")}
         classNames={{ input: styles.script }}
       />
 
-      <Group justify="flex-end" mt="md">
-        <Button
-          rightSection={<IconPlayerPlayFilled size={14} />}
-          type="submit"
-          loading={loading}
-        >
-          Start
-        </Button>
-      </Group>
+      <Button
+        mt="md"
+        type="submit"
+        loading={loading}
+        fullWidth
+        disabled={
+          form.getValues().name.length === 0 ||
+          form.getValues().command.length === 0
+        }
+      >
+        Start
+      </Button>
     </form>
   );
 }

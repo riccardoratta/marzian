@@ -5,7 +5,6 @@ import { useAxiosQuery } from "@caplit/axios-query";
 import {
   Alert,
   Anchor,
-  Box,
   Button,
   Card,
   Container,
@@ -22,16 +21,17 @@ import { SessionTile } from "@/components/session-tile";
 import { IconInfoCircle, IconPlus } from "@tabler/icons-react";
 import {
   SavedSession,
+  SavedSessionsResponse,
   SessionsResponse,
   SettingsResponse,
 } from "@/utils/interfaces";
 import logo from "@/utils/logo";
 import { api } from "@/utils/http";
 import { useDisclosure } from "@mantine/hooks";
-import { SavedSessionsPicker } from "@/components/saved-sessions-picker";
 import { ListSkeleton } from "@/components/list-skeleton";
-import { AddSession } from "@/components/add-session";
 import { useState } from "react";
+import { SavedSessionTile } from "@/components/saved-session-tile";
+import { AddSession } from "@/components/add-session";
 
 export default function HomePage() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -48,24 +48,18 @@ export default function HomePage() {
     axios: { url: "sessions" },
   });
 
+  const savedSessionQuery = useAxiosQuery<SavedSessionsResponse>({
+    client: api,
+    reactQuery: { queryKey: ["sessions", "saved"] },
+    axios: { url: "sessions/saved" },
+  });
+
   const [savedSession, setSavedSession] = useState<SavedSession>();
 
   return (
     <>
-      <Modal
-        opened={opened}
-        onClose={close}
-        title="Add a new session"
-        size="xl"
-      >
-        <Flex>
-          <Box mr="md">
-            <SavedSessionsPicker onSessionPick={setSavedSession} />
-          </Box>
-          <Box flex={2}>
-            <AddSession savedSession={savedSession} />
-          </Box>
-        </Flex>
+      <Modal opened={opened} onClose={close} title="Add a new session">
+        <AddSession savedSession={savedSession} />
       </Modal>
       <Container py="xl" px={0}>
         <Stack align="left" justify="center" mb="lg" gap="xs">
@@ -98,27 +92,53 @@ export default function HomePage() {
                 size="xs"
                 variant="light"
                 leftSection={<IconPlus size={14} stroke={1.5} />}
-                onClick={open}
+                onClick={() => {
+                  setSavedSession(undefined);
+                  open();
+                }}
               >
                 Add session
               </Button>
             </Group>
           </Group>
           <Divider />
-          {sessionsQuery.isLoading ? (
+          {sessionsQuery.isLoading && savedSessionQuery.isLoading ? (
             <ListSkeleton />
-          ) : sessionsQuery.data &&
-            sessionsQuery.data.data.sessions.length !== 0 ? (
-            sessionsQuery.data.data.sessions.map((session) => (
-              <SessionTile key={session.name} session={session}></SessionTile>
-            ))
-          ) : (
+          ) : (sessionsQuery.data?.data.sessions.length ?? 0) +
+              (savedSessionQuery.data?.data.sessions.length ?? 0) ===
+            0 ? (
             <Flex align="center">
               <Text ml="lg" my="md" c="dimmed">
                 Nothing is started yet?&nbsp;
               </Text>
               <Anchor onClick={open}>Start a new session.</Anchor>
             </Flex>
+          ) : (
+            [
+              ...(sessionsQuery.data?.data.sessions.map((session) => (
+                <SessionTile key={session.name} session={session} />
+              )) ?? []),
+
+              ...((sessionsQuery.data &&
+                savedSessionQuery.data?.data.sessions
+                  .filter(
+                    (savedSession) =>
+                      !sessionsQuery.data.data.sessions
+                        .map((session) => session.name)
+                        .includes(savedSession.name),
+                  )
+                  .map((savedSession) => (
+                    <SavedSessionTile
+                      key={savedSession.name}
+                      savedSession={savedSession}
+                      onClick={() => {
+                        setSavedSession(savedSession);
+                        open();
+                      }}
+                    />
+                  ))) ??
+                []),
+            ]
           )}
         </Card>
       </Container>

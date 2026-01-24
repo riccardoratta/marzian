@@ -1,9 +1,9 @@
 import { execSync } from "child_process";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, realpathSync } from "fs";
 import { join, resolve } from "path";
 
 export const getPIDbyName = (name: string): number | undefined => {
-  const scriptPath = join(getMarzianDir(), name);
+  const scriptPath = realpathSync(join(getMarzianDir(), name));
 
   console.log(`getPIDbyName: ${scriptPath}`);
 

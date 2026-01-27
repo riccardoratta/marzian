@@ -88,7 +88,7 @@ const TerminalComponent = forwardRef<
   useEffect(() => {
     if (width !== 0 && height !== 0) {
       const new_cols = Math.floor(width / 9.25);
-      const new_rows = Math.floor(height / 17.875);
+      const new_rows = Math.floor(height / 20);
 
       const terminal = terminalRef.current;
 

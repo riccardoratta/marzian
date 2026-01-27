@@ -5,8 +5,6 @@ import { join, resolve } from "path";
 export const getPIDbyName = (name: string): number | undefined => {
   const scriptPath = realpathSync(join(getMarzianDir(), name));
 
-  console.log(`getPIDbyName: ${scriptPath}`);
-
   // Find the PID of the command launched
   try {
     const psRes = execSync(
@@ -23,9 +21,6 @@ export const getPIDbyName = (name: string): number | undefined => {
         }
       }
     });
-
-    console.log("psRes:\n", psRes);
-    console.log("Parsed PIDs:", PIDs);
 
     for (const PID of PIDs) {
       if (PID) {

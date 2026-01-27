@@ -120,7 +120,7 @@ export function Session({ session }: { session: SessionResponse }) {
           </Button>
         </Group>
       </Modal>
-      <Paper h="100%" style={{ overflow: "hidden" }}>
+      <Paper h="100%" style={{ overflow: "hidden" }} withBorder shadow="md">
         <Group justify="space-between" px="md" py="xs">
           <Text fw={700}>{session.name}</Text>
           <Group gap="xs">

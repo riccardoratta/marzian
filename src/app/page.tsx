@@ -87,7 +87,7 @@ export default function HomePage() {
             )}
         </Stack>
 
-        <Card withBorder padding={0}>
+        <Card p={0} withBorder shadow="md">
           <Group justify="space-between" px="md" py="xs">
             <Text fw={700}>Sessions</Text>
 

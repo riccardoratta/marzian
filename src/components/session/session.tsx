@@ -12,12 +12,13 @@ import {
   Button,
   Container,
   Group,
+  Modal,
   Paper,
   Text,
   Tooltip,
 } from "@mantine/core";
 import { useAxiosMutation } from "@caplit/axios-query";
-import { useToggle } from "@mantine/hooks";
+import { useDisclosure, useToggle } from "@mantine/hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { TerminalComponent, TerminalMethods } from "@/components/terminal";
@@ -96,8 +97,29 @@ export function Session({ session }: { session: SessionResponse }) {
 
   const router = useRouter();
 
+  const [opened, { open, close }] = useDisclosure(false);
+
   return (
     <Container fluid px={0} h="100%">
+      <Modal title="Delete session" opened={opened} onClose={close}>
+        Are you sure you want to delete this session? This action cannot be
+        undone.
+        <Group mt="lg" justify="flex-end">
+          <Button onClick={close} variant="default">
+            Cancel
+          </Button>
+          <Button
+            onClick={() =>
+              void deleteSession.mutateAsync(null).then(() => {
+                router.replace("/");
+              })
+            }
+            color="red"
+          >
+            Delete
+          </Button>
+        </Group>
+      </Modal>
       <Paper h="100%" style={{ overflow: "hidden" }}>
         <Group justify="space-between" px="md" py="xs">
           <Text fw={700}>{session.name}</Text>
@@ -156,11 +178,7 @@ export function Session({ session }: { session: SessionResponse }) {
               variant="light"
               color="red"
               aria-label="Settings"
-              onClick={() =>
-                void deleteSession.mutateAsync(null).then(() => {
-                  router.replace("/");
-                })
-              }
+              onClick={open}
               className={styles["toolbar-button"]}
             >
               <IconTrash

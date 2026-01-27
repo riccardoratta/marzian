@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
 ::selection {
   background-color: var(--mantine-primary-color-filled);
   color: var(--app-contrast-color);

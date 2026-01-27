@@ -27,7 +27,11 @@ const TerminalComponent = forwardRef<
   const terminalContainerRef = useRef<HTMLDivElement>(null);
 
   const terminalRef = useRef(
-    new Terminal({ cols: TMUX_DEFAULT_COLS, rows: TMUX_DEFAULT_ROWS }),
+    new Terminal({
+      cols: TMUX_DEFAULT_COLS,
+      rows: TMUX_DEFAULT_ROWS,
+      fontFamily: "Fira Code",
+    }),
   );
 
   const { width, height, ref: terminalSizeRef } = useElementSize();
@@ -82,17 +86,21 @@ const TerminalComponent = forwardRef<
   );
 
   useEffect(() => {
-    const new_cols = Math.floor(width / 9.25);
-    const new_rows = Math.floor(height / 17.875);
+    if (width !== 0 && height !== 0) {
+      const new_cols = Math.floor(width / 9.25);
+      const new_rows = Math.floor(height / 17.875);
 
-    const terminal = terminalRef.current;
+      const terminal = terminalRef.current;
 
-    if (terminal.cols !== new_cols && new_cols !== 0) {
-      resize(new_cols, terminal.rows);
-    }
+      if (terminal.cols !== new_cols && new_cols !== 0) {
+        // console.log("Updated cols", new_cols);
+        resize(new_cols, terminal.rows);
+      }
 
-    if (terminal.rows !== new_rows && new_rows !== 0) {
-      resize(terminal.cols, new_rows);
+      if (terminal.rows !== new_rows && new_rows !== 0) {
+        // console.log("Update rows", new_rows);
+        resize(terminal.cols, new_rows);
+      }
     }
   }, [width, height, resize]);
 

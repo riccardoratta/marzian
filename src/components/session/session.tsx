@@ -10,9 +10,9 @@ import type {
 import {
   ActionIcon,
   Button,
-  Card,
   Container,
   Group,
+  Paper,
   Text,
   Tooltip,
 } from "@mantine/core";
@@ -97,9 +97,9 @@ export function Session({ session }: { session: SessionResponse }) {
   const router = useRouter();
 
   return (
-    <Container h="100%">
-      <Card py={0} style={{ borderEndStartRadius: 0, borderEndEndRadius: 0 }}>
-        <Group justify="space-between" px={0} py="xs">
+    <Container fluid px={0} h="100%">
+      <Paper h="100%" style={{ overflow: "hidden" }}>
+        <Group justify="space-between" px="md" py="xs">
           <Text fw={700}>{session.name}</Text>
           <Group gap="xs">
             <Tooltip label="Interactive">
@@ -170,12 +170,12 @@ export function Session({ session }: { session: SessionResponse }) {
             </ActionIcon>
           </Group>
         </Group>
-      </Card>
-      <TerminalComponent
-        ref={terminalRef}
-        onData={dataHandler}
-        onResize={resizeHandler}
-      />
+        <TerminalComponent
+          ref={terminalRef}
+          onData={dataHandler}
+          onResize={resizeHandler}
+        />
+      </Paper>
     </Container>
   );
 }

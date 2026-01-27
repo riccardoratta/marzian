@@ -14,3 +14,7 @@ body {
 .xterm-screen {
   margin: auto;
 }
+
+.terminal.xterm {
+  height: 100%;
+}

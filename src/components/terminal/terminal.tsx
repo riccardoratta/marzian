@@ -98,26 +98,30 @@ const TerminalComponent = forwardRef<
 
   return (
     <>
-      <div
-        style={{
-          width: "100%",
-          height: "10px",
-          backgroundColor: "black",
-        }}
-      ></div>
+      <BlackHorizontalMargin height="10px" />
       <Container
         ref={terminalSizeRef}
+        fluid
         style={{
-          width: "100%",
-          height: "calc(100% - 60px)",
+          height: "calc(100% - 70px)",
         }}
-        px={0}
-        py={0}
+        p={0}
       >
-        <div ref={terminalContainerRef}></div>
+        <div ref={terminalContainerRef} style={{ height: "100%" }}></div>
       </Container>
+      <BlackHorizontalMargin height="10px" />
     </>
   );
 });
+
+const BlackHorizontalMargin = ({ height }: { height: string }) => (
+  <div
+    style={{
+      width: "100%",
+      height,
+      backgroundColor: "black",
+    }}
+  ></div>
+);
 
 export { TerminalComponent };

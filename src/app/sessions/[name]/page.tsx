@@ -17,7 +17,7 @@ export default function SessionPage() {
   });
 
   return (
-    <Container py="md" px={0} style={{ height: "100vh" }}>
+    <Container py="md" px={0} style={{ height: "100dvh" }}>
       {data && <Session session={data.data} />}
     </Container>
   );

@@ -62,6 +62,7 @@ export default function HomePage() {
         opened={opened}
         onClose={close}
         title={savedSession ? "Start session" : "Add session"}
+        size="xl"
       >
         <AddSession savedSession={savedSession} />
       </Modal>

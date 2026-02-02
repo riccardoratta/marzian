@@ -28,8 +28,8 @@ export function SessionTile({ session }: { session: Session }) {
       href={`/sessions/${session.name}`}
     >
       <Flex>
-        <Group flex="1">
-          <Text>{session.name}</Text>
+        <Group flex="1" style={{ minWidth: 0 }}>
+          <Text truncate="end">{session.name}</Text>
           {session.createdAt && (
             <Text c="dimmed">
               {formatDistance(session.createdAt, now, {

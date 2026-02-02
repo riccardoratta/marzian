@@ -16,8 +16,8 @@ export function SavedSessionTile({
   return (
     <UnstyledButton p="md" className={styles.clickable} onClick={onClick}>
       <Flex>
-        <Group flex="1">
-          <Text>{savedSession.name}</Text>
+        <Group flex="1" style={{ minWidth: 0 }}>
+          <Text truncate="end">{savedSession.name}</Text>
         </Group>
       </Flex>
     </UnstyledButton>

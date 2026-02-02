@@ -60,6 +60,7 @@ export function AddSession({
 
   return (
     <form
+      spellCheck={false}
       onSubmit={form.onSubmit((values) => {
         setLoading(true);
 
@@ -97,6 +98,7 @@ export function AddSession({
         placeholder="example_123"
         key={form.key("name")}
         {...form.getInputProps("name")}
+        data-autofocus
       />
       <Text size="xs" c="dimmed" style={{ marginTop: "5px" }}>
         Valid charachters are letters, numbers, and dashes.

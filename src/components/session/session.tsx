@@ -24,6 +24,7 @@ import { io, Socket } from "socket.io-client";
 import { TerminalComponent, TerminalMethods } from "@/components/terminal";
 import styles from "./session.module.css";
 import {
+  IconCopy,
   IconDownload,
   IconKeyboard,
   IconKeyboardOff,
@@ -31,6 +32,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { AddSession } from "@/components/add-session";
 
 export function Session({ session }: { session: SessionResponse }) {
   const [socket, setSocket] =
@@ -97,103 +99,132 @@ export function Session({ session }: { session: SessionResponse }) {
 
   const router = useRouter();
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const deleteSessionDisclosure = useDisclosure(false);
+  const copySessionDisclosure = useDisclosure(false);
 
   return (
-    <Container fluid px={0} h="100%">
-      <Modal title="Delete session" opened={opened} onClose={close}>
-        Are you sure you want to delete this session? This action cannot be
-        undone.
-        <Group mt="lg" justify="flex-end">
-          <Button onClick={close} variant="default">
-            Cancel
-          </Button>
-          <Button
-            onClick={() =>
-              void deleteSession.mutateAsync(null).then(() => {
-                router.replace("/");
-              })
-            }
-            color="red"
-          >
-            Delete
-          </Button>
-        </Group>
+    <>
+      <Modal
+        opened={copySessionDisclosure[0]}
+        onClose={copySessionDisclosure[1].close}
+        title={"Copy session"}
+        size="xl"
+      >
+        <AddSession savedSession={session} disallowedNames={[session.name]} />
       </Modal>
-      <Paper h="100%" style={{ overflow: "hidden" }} withBorder shadow="md">
-        <Group justify="space-between" px="md" py="xs">
-          <Text fw={700}>{session.name}</Text>
-          <Group gap="xs">
-            <Tooltip label="Interactive">
+      <Container fluid px={0} h="100%">
+        <Modal
+          title="Delete session"
+          opened={deleteSessionDisclosure[0]}
+          onClose={deleteSessionDisclosure[1].close}
+        >
+          Are you sure you want to delete this session? This action cannot be
+          undone.
+          <Group mt="lg" justify="flex-end">
+            <Button
+              onClick={deleteSessionDisclosure[1].close}
+              variant="default"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() =>
+                void deleteSession.mutateAsync(null).then(() => {
+                  router.replace("/");
+                })
+              }
+              color="red"
+            >
+              Delete
+            </Button>
+          </Group>
+        </Modal>
+        <Paper h="100%" style={{ overflow: "hidden" }} withBorder shadow="md">
+          <Group justify="space-between" px="md" py="xs">
+            <Text fw={700}>{session.name}</Text>
+            <Group gap="xs">
+              <ActionIcon
+                size="md"
+                variant="default"
+                onClick={copySessionDisclosure[1].open}
+              >
+                <IconCopy
+                  className={styles["toolbar-button-icon"]}
+                  stroke={1.5}
+                  size={18}
+                />
+              </ActionIcon>
+              <Tooltip label="Interactive">
+                <ActionIcon
+                  size="md"
+                  variant="light"
+                  onClick={() => {
+                    toggleEditable();
+                  }}
+                  color={!editable ? "gray" : undefined}
+                  className={styles["toolbar-button"]}
+                >
+                  {editable ? (
+                    <IconKeyboard
+                      className={styles["toolbar-button-icon"]}
+                      stroke={1.5}
+                    />
+                  ) : (
+                    <IconKeyboardOff
+                      className={styles["toolbar-button-icon"]}
+                      stroke={1.5}
+                    />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+              <Button
+                size="xs"
+                variant="light"
+                aria-label="Restart"
+                onClick={() =>
+                  void restartSession.mutateAsync(null).then(() => {
+                    window.location.reload();
+                  })
+                }
+                leftSection={<IconRepeat size={14} stroke={1.5} />}
+              >
+                Restart
+              </Button>
+              <ActionIcon
+                size="md"
+                variant="default"
+                aria-label="Download session"
+                className={styles["toolbar-button"]}
+                component="a"
+                href={`/api/sessions/${session.name}/download`}
+              >
+                <IconDownload
+                  className={styles["toolbar-button-icon"]}
+                  stroke={1.5}
+                />
+              </ActionIcon>
               <ActionIcon
                 size="md"
                 variant="light"
-                onClick={() => {
-                  toggleEditable();
-                }}
-                color={!editable ? "gray" : undefined}
+                color="red"
+                aria-label="Settings"
+                onClick={deleteSessionDisclosure[1].open}
                 className={styles["toolbar-button"]}
               >
-                {editable ? (
-                  <IconKeyboard
-                    className={styles["toolbar-button-icon"]}
-                    stroke={1.5}
-                  />
-                ) : (
-                  <IconKeyboardOff
-                    className={styles["toolbar-button-icon"]}
-                    stroke={1.5}
-                  />
-                )}
+                <IconTrash
+                  className={styles["toolbar-button-icon"]}
+                  stroke={1.5}
+                />
               </ActionIcon>
-            </Tooltip>
-            <Button
-              size="xs"
-              variant="light"
-              aria-label="Restart"
-              onClick={() =>
-                void restartSession.mutateAsync(null).then(() => {
-                  window.location.reload();
-                })
-              }
-              leftSection={<IconRepeat size={14} stroke={1.5} />}
-            >
-              Restart
-            </Button>
-            <ActionIcon
-              size="md"
-              variant="default"
-              aria-label="Download session"
-              className={styles["toolbar-button"]}
-              component="a"
-              href={`/api/sessions/${session.name}/download`}
-            >
-              <IconDownload
-                className={styles["toolbar-button-icon"]}
-                stroke={1.5}
-              />
-            </ActionIcon>
-            <ActionIcon
-              size="md"
-              variant="light"
-              color="red"
-              aria-label="Settings"
-              onClick={open}
-              className={styles["toolbar-button"]}
-            >
-              <IconTrash
-                className={styles["toolbar-button-icon"]}
-                stroke={1.5}
-              />
-            </ActionIcon>
+            </Group>
           </Group>
-        </Group>
-        <TerminalComponent
-          ref={terminalRef}
-          onData={dataHandler}
-          onResize={resizeHandler}
-        />
-      </Paper>
-    </Container>
+          <TerminalComponent
+            ref={terminalRef}
+            onData={dataHandler}
+            onResize={resizeHandler}
+          />
+        </Paper>
+      </Container>
+    </>
   );
 }

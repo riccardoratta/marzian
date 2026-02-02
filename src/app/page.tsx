@@ -64,7 +64,12 @@ export default function HomePage() {
         title={savedSession ? "Start session" : "Add session"}
         size="xl"
       >
-        <AddSession savedSession={savedSession} />
+        <AddSession
+          savedSession={savedSession}
+          disallowedNames={sessionsQuery.data?.data.sessions.map(
+            (session) => session.name,
+          )}
+        />
       </Modal>
       <Container py="xl" px={0}>
         <Stack align="left" justify="center" mb="lg" gap="xs">

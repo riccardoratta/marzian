@@ -101,7 +101,7 @@ export const createSession = (name: string, command?: string) => {
   console.log(`Creating new tmux session with name ${name}`);
 
   if (getSession(name)) {
-    throw new TmuxError("There is another session with the same name.");
+    throw new TmuxError("There is another active session with the same name.");
   }
 
   const scriptPath = getScriptPath(name);
@@ -165,7 +165,9 @@ export const createSession = (name: string, command?: string) => {
       } else {
         if (stderr.trim().startsWith("duplicate session")) {
           reject(
-            new TmuxError("There is another tmux session with the same name."),
+            new TmuxError(
+              "There is another active tmux session with the same name.",
+            ),
           );
         } else {
           reject(

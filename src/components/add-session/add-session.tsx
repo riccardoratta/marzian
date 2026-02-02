@@ -14,7 +14,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./add-session.module.css";
 
-export function AddSession({ savedSession }: { savedSession?: SavedSession }) {
+export function AddSession({
+  savedSession,
+  disallowedNames = [],
+}: {
+  savedSession?: SavedSession;
+  disallowedNames?: string[];
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -32,9 +38,16 @@ export function AddSession({ savedSession }: { savedSession?: SavedSession }) {
       command: "",
     },
     validate: {
-      name: (value) =>
-        sessionNameSchema.safeParse(value).success ? null : "Invalid name",
-      command: (value) => (value.length !== 0 ? null : "Invalid command"),
+      name: (value) => {
+        if (disallowedNames.includes(value)) {
+          return "There is another active session with the same name.";
+        }
+
+        return sessionNameSchema.safeParse(value).success
+          ? null
+          : "Invalid name.";
+      },
+      command: (value) => (value.length !== 0 ? null : "Invalid command."),
     },
   });
 

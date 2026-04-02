@@ -5,10 +5,14 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { Container } from "@mantine/core";
 import { Terminal } from "@xterm/xterm";
 import { useElementSize } from "@mantine/hooks";
-import { TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS } from "@/utils/misc";
+import {
+  TERMINAL_FONT_SIZE_MD,
+  TERMINAL_FONT_SIZE_SM,
+  TMUX_DEFAULT_COLS,
+  TMUX_DEFAULT_ROWS,
+} from "@/utils/misc";
 import "@xterm/xterm/css/xterm.css";
 import { Fira_Code } from "next/font/google";
 import FontFaceObserver from "fontfaceobserver";
@@ -28,17 +32,29 @@ const TerminalComponent = forwardRef<
     onResize: (cols: number, rows: number) => void;
   }
 >(function TerminalComponent({ onData, onResize }, ref) {
-  const terminalContainerRef = useRef<HTMLDivElement>(null);
+  const { width, height, ref: terminalContainerDivRef } = useElementSize();
+  const terminalDivRef = useRef<HTMLDivElement>(null);
 
   const terminalRef = useRef(
     new Terminal({
       cols: TMUX_DEFAULT_COLS,
       rows: TMUX_DEFAULT_ROWS,
       fontFamily: "Fira Code, Fira Code Fallback",
+      fontSize: TERMINAL_FONT_SIZE_MD,
+      scrollback: 0,
     }),
   );
 
-  const { width, height, ref: terminalSizeRef } = useElementSize();
+  useEffect(() => {
+    if (width > 0 && height > 0) {
+      if (width < 700) {
+        terminalRef.current.options.fontSize = TERMINAL_FONT_SIZE_SM;
+      } else {
+        terminalRef.current.options.fontSize = TERMINAL_FONT_SIZE_MD;
+      }
+      handleResize(height, width);
+    }
+  }, [height, width]);
 
   useEffect(() => {
     const terminal = terminalRef.current;
@@ -51,10 +67,10 @@ const TerminalComponent = forwardRef<
         console.log("Custom font available, load the terminal");
 
         // Attach terminalRef to its container
-        if (terminalContainerRef.current) {
-          terminal.open(terminalContainerRef.current);
+        if (terminalDivRef.current) {
+          terminal.open(terminalDivRef.current);
 
-          // Set resize
+          // Set initial size
           terminal.resize(TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS);
         }
       })
@@ -90,63 +106,36 @@ const TerminalComponent = forwardRef<
     };
   }, []);
 
-  const resize = useCallback(
-    (cols: number, rows: number) => {
-      terminalRef.current.resize(cols, rows);
-      onResize(cols, rows);
+  const handleResize = useCallback(
+    (height: number, width: number) => {
+      // @ts-ignore
+      const charService = terminalRef.current._core._charSizeService;
+
+      if (charService) {
+        if (charService.height && charService.width) {
+          const new_rows = Math.floor((height - 20) / charService.height);
+          const new_cols = Math.floor((width - 20) / charService.width);
+          terminalRef.current.resize(new_cols, new_rows);
+          onResize(new_cols, new_rows);
+        }
+      }
     },
-    [onResize],
+    [terminalRef, height, width],
   );
-
-  useEffect(() => {
-    if (width !== 0 && height !== 0) {
-      const new_cols = Math.floor(width / 9.25);
-      const new_rows = Math.floor(height / 20);
-
-      const terminal = terminalRef.current;
-
-      if (terminal.cols !== new_cols && new_cols !== 0) {
-        // console.log("Updated cols", new_cols);
-        resize(new_cols, terminal.rows);
-      }
-
-      if (terminal.rows !== new_rows && new_rows !== 0) {
-        // console.log("Update rows", new_rows);
-        resize(terminal.cols, new_rows);
-      }
-    }
-  }, [width, height, resize]);
 
   return (
-    <>
-      <BlackHorizontalMargin height="10px" />
-      <Container
-        ref={terminalSizeRef}
-        fluid
-        style={{
-          height: "calc(100% - 70px)",
-        }}
-        p={0}
-      >
-        <div
-          ref={terminalContainerRef}
-          style={{ height: "100%" }}
-          className={firaCode.className}
-        ></div>
-      </Container>
-      <BlackHorizontalMargin height="10px" />
-    </>
+    <div
+      ref={terminalContainerDivRef}
+      style={{
+        overflow: "hidden",
+        width: "100%",
+        backgroundColor: "black",
+        padding: "10px",
+      }}
+    >
+      <div ref={terminalDivRef} className={firaCode.className}></div>
+    </div>
   );
 });
-
-const BlackHorizontalMargin = ({ height }: { height: string }) => (
-  <div
-    style={{
-      width: "100%",
-      height,
-      backgroundColor: "black",
-    }}
-  ></div>
-);
 
 export { TerminalComponent };

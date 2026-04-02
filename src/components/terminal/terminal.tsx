@@ -10,6 +10,10 @@ import { Terminal } from "@xterm/xterm";
 import { useElementSize } from "@mantine/hooks";
 import { TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS } from "@/utils/misc";
 import "@xterm/xterm/css/xterm.css";
+import { Fira_Code } from "next/font/google";
+import FontFaceObserver from "fontfaceobserver";
+
+const firaCode = Fira_Code();
 
 export interface TerminalMethods {
   writeln: (value: string) => void;
@@ -30,7 +34,7 @@ const TerminalComponent = forwardRef<
     new Terminal({
       cols: TMUX_DEFAULT_COLS,
       rows: TMUX_DEFAULT_ROWS,
-      fontFamily: "Fira Code",
+      fontFamily: "Fira Code, Fira Code Fallback",
     }),
   );
 
@@ -39,13 +43,22 @@ const TerminalComponent = forwardRef<
   useEffect(() => {
     const terminal = terminalRef.current;
 
-    // Attach terminalRef to its container
-    if (terminalContainerRef.current) {
-      terminal.open(terminalContainerRef.current);
+    const fontObserver = new FontFaceObserver("Fira Code");
 
-      // Set resize
-      terminal.resize(TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS);
-    }
+    void fontObserver
+      .load()
+      .then(() => {
+        console.log("Custom font available, load the terminal");
+
+        // Attach terminalRef to its container
+        if (terminalContainerRef.current) {
+          terminal.open(terminalContainerRef.current);
+
+          // Set resize
+          terminal.resize(TMUX_DEFAULT_COLS, TMUX_DEFAULT_ROWS);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -115,7 +128,11 @@ const TerminalComponent = forwardRef<
         }}
         p={0}
       >
-        <div ref={terminalContainerRef} style={{ height: "100%" }}></div>
+        <div
+          ref={terminalContainerRef}
+          style={{ height: "100%" }}
+          className={firaCode.className}
+        ></div>
       </Container>
       <BlackHorizontalMargin height="10px" />
     </>

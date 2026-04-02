@@ -56,7 +56,6 @@ export function Session({ session }: { session: SessionResponse }) {
         console.log("Connected to socket");
         terminalRef.current?.clear();
         socket.on("data", (data) => {
-          console.log(`received ${String(data.length)} bytes`);
           terminalRef.current?.write(data);
         });
       });

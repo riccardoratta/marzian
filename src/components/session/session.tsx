@@ -24,10 +24,10 @@ import { io, Socket } from "socket.io-client";
 import { TerminalComponent, TerminalMethods } from "@/components/terminal";
 import styles from "./session.module.css";
 import {
-  IconCopy,
   IconDownload,
   IconKeyboard,
   IconKeyboardOff,
+  IconLibraryPlus,
   IconRepeat,
   IconTrash,
 } from "@tabler/icons-react";
@@ -143,17 +143,6 @@ export function Session({ session }: { session: SessionResponse }) {
           <Group justify="space-between" px="md" py="xs">
             <Text fw={700}>{session.name}</Text>
             <Group gap="xs">
-              <ActionIcon
-                size="md"
-                variant="default"
-                onClick={copySessionDisclosure[1].open}
-              >
-                <IconCopy
-                  className={styles["toolbar-button-icon"]}
-                  stroke={1.5}
-                  size={18}
-                />
-              </ActionIcon>
               <Tooltip label="Interactive">
                 <ActionIcon
                   size="md"
@@ -190,6 +179,17 @@ export function Session({ session }: { session: SessionResponse }) {
               >
                 Restart
               </Button>
+              <ActionIcon
+                size="md"
+                variant="default"
+                onClick={copySessionDisclosure[1].open}
+              >
+                <IconLibraryPlus
+                  className={styles["toolbar-button-icon"]}
+                  stroke={1.5}
+                  size={18}
+                />
+              </ActionIcon>
               <ActionIcon
                 size="md"
                 variant="default"

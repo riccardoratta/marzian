@@ -5,7 +5,6 @@ import { createServer } from "http";
 import next from "next";
 import { Server } from "socket.io";
 import { Option, program } from "commander";
-import { parse } from "url";
 import path from "path";
 
 program.addOption(
@@ -37,7 +36,7 @@ globalThis.sourceDir = path.dirname(__dirname);
 
 void app.prepare().then(() => {
   const httpServer = createServer((req, res) => {
-    if (req.url) void handler(req, res, parse(req.url, true));
+    handler(req, res);
   });
 
   const io = new Server(httpServer);

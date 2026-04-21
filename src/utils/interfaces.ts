@@ -61,6 +61,6 @@ export interface SavedSessionsResponse {
 }
 
 export interface SettingsResponse {
-  marzianDir: string;
+  projectDir: string;
   tmuxHistoryLimit?: number;
 }

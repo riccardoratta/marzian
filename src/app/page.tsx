@@ -77,7 +77,7 @@ export default function HomePage() {
           <Title order={3} style={{ letterSpacing: 3, color: "#868e96" }}>
             MARZIAN
           </Title>
-          <Text c="dimmed">{settingsQuery.data?.data.marzianDir}</Text>
+          <Text c="dimmed">{settingsQuery.data?.data.projectDir}</Text>
           {settingsQuery.data?.data.tmuxHistoryLimit &&
             settingsQuery.data.data.tmuxHistoryLimit <= 10000 && (
               <Alert variant="light" color="yellow" icon={<IconInfoCircle />}>

@@ -239,32 +239,58 @@ export const restartSession = (name: string) => {
 };
 
 export const captureSession = (name: string) => {
-  const spawnRes = spawnSync(`tmux capture-pane -Jp -S - -E - -t ${name}`, {
+  if (!getSession(name)) {
+    throw new TmuxError("Session not found.");
+  }
+
+  const process = spawn(`tmux capture-pane -Jp -S - -E - -t ${name}`, {
     shell: true,
   });
 
-  if (spawnRes.status !== 0) {
-    // Session not found error
-    if (spawnRes.stderr.toString().trim().startsWith("can't find")) {
-      throw new TmuxError("Session not found.");
-    }
+  let stderr = "";
 
-    // General error
-    throw new TmuxError(undefined, {
-      spawnArgs: `tmux capture-pane -Jp -S - -E - -t ${name}`.split(" "),
-      exitCode: spawnRes.status,
-      stdout: spawnRes.stdout.toString(),
-      stderr: spawnRes.stderr.toString(),
-    });
-  }
+  return new ReadableStream({
+    start(controller) {
+      process.stdout.on("data", (data) => {
+        controller.enqueue(data);
+      });
 
-  return spawnRes.stdout.toString();
+      process.stderr.on("data", (data) => {
+        stderr += String(data);
+      });
+
+      process.on("error", (err) => {
+        controller.error(err);
+      });
+
+      process.on("close", (exitCode) => {
+        if (exitCode !== 0) {
+          controller.error(
+            // General error
+            new TmuxError(undefined, {
+              spawnArgs: `tmux capture-pane -Jp -S - -E - -t ${name}`.split(
+                " ",
+              ),
+              exitCode,
+              stderr,
+            }),
+          );
+        } else {
+          controller.close();
+        }
+      });
+    },
+
+    cancel() {
+      process.kill();
+    },
+  });
 };
 
 interface TmuxErrorContext {
   spawnArgs: string[];
   exitCode: number | null;
-  stdout: string;
+  stdout?: string;
   stderr: string;
 }
 

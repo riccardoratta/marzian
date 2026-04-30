@@ -7,14 +7,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _: NextRequest,
-  { params }: { params: Promise<{ name: string }> }
+  { params }: { params: Promise<{ name: string }> },
 ): Promise<NextResponse<string | Details>> {
   const { name } = await params;
 
   try {
     return new NextResponse(captureSession(name), {
       headers: {
-        "content-type": "image/txt",
+        "content-type": "text/plain; charset=utf-8",
         "content-disposition": `attachment; filename="${name}.txt"`,
       },
     });
